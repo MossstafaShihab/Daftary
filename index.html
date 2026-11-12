@@ -1,0 +1,1767 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>دفتري (Copy)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400;500;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ui:"Alexandria", system-ui, "Segoe UI", Tahoma, "Noto Sans Arabic", sans-serif;
+  --quote:"Amiri", "Traditional Arabic", "Noto Naskh Arabic", serif;
+  --bg:#EEF1EC; --surface:#FFFFFF; --surface-2:#F5F7F3;
+  --ink:#1D2B26; --muted:#5E6E66; --line:#D8E0D9; --line-strong:#B5C3BA;
+  --pine:#2F6B5A; --pine-ink:#FFFFFF; --pine-soft:#D9EAE3;
+  --gold:#9C7A12; --gold-soft:#F5EDCF;
+  --ok:#2C7F52; --ok-soft:#DCEFE3; --bad:#B0443A; --bad-soft:#F7E0DC;
+  --shadow:0 10px 30px rgba(20,40,30,.14);
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#111714; --surface:#19211D; --surface-2:#202A25;
+    --ink:#E3EAE5; --muted:#9BABA2; --line:#2C3832; --line-strong:#40514A;
+    --pine:#62B69C; --pine-ink:#0D1913; --pine-soft:#1C3A30;
+    --gold:#D8B550; --gold-soft:#2A2513;
+    --ok:#53C28C; --ok-soft:#173020; --bad:#E57A6E; --bad-soft:#3A1F1B;
+    --shadow:0 10px 30px rgba(0,0,0,.45);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#111714; --surface:#19211D; --surface-2:#202A25;
+  --ink:#E3EAE5; --muted:#9BABA2; --line:#2C3832; --line-strong:#40514A;
+  --pine:#62B69C; --pine-ink:#0D1913; --pine-soft:#1C3A30;
+  --gold:#D8B550; --gold-soft:#2A2513;
+  --ok:#53C28C; --ok-soft:#173020; --bad:#E57A6E; --bad-soft:#3A1F1B;
+  --shadow:0 10px 30px rgba(0,0,0,.45);
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--ui);font-size:16px;line-height:1.6;-webkit-tap-highlight-color:transparent;min-height:100%}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--pine);outline-offset:2px;border-radius:8px}
+[hidden]{display:none !important}
+svg{display:block}
+
+/* Header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+.top-inner{max-width:780px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px}
+.brand{display:flex;flex-direction:column;line-height:1.25;min-width:0}
+.brand b{font-size:22px;font-weight:700;letter-spacing:0}
+.brand span{font-size:12px;color:var(--muted)}
+.spacer{flex:1}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);padding:4px 10px;border:1px solid var(--line);border-radius:99px;background:var(--surface);white-space:nowrap}
+.pill i{width:7px;height:7px;border-radius:50%;background:var(--line-strong);flex:none}
+.pill[data-s="synced"] i{background:var(--ok)}
+.pill[data-s="syncing"] i,.pill[data-s="connecting"] i{background:var(--gold)}
+.pill[data-s="offline"] i{background:var(--bad)}
+.icon-btn{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;color:var(--ink);flex:none}
+.icon-btn:hover{border-color:var(--line-strong)}
+
+/* Tabs: bottom bar on phones, segmented control on wide screens */
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(6,1fr);padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px))}
+.tab{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 4px;border-radius:12px;color:var(--muted);font-size:12.5px;font-weight:500}
+.tab[aria-current="page"]{color:var(--pine);background:var(--pine-soft)}
+@media (min-width:820px){
+  .tabs{position:static;background:var(--surface-2);border:1px solid var(--line);border-radius:14px;padding:4px;display:flex;gap:2px}
+  .tab{flex-direction:row;gap:8px;padding:7px 14px;font-size:14px}
+  .tab[aria-current="page"]{background:var(--surface);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+}
+
+main{max-width:780px;margin:0 auto;padding:18px 16px 120px}
+@media (min-width:820px){main{padding-bottom:56px}}
+.view-head{display:flex;align-items:center;gap:12px;margin:4px 0 14px}
+.view-head h1{font-size:24px;font-weight:700;margin:0;flex:1}
+.hint{color:var(--muted);font-size:14px;margin:-6px 0 16px}
+
+.primary{border:0;background:var(--pine);color:var(--pine-ink);padding:10px 16px;border-radius:12px;font-weight:600;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.primary:hover{filter:brightness(1.06)}
+.ghost{border:1px solid var(--line);background:var(--surface);padding:9px 14px;border-radius:12px;font-weight:500;color:var(--ink)}
+.ghost:hover{border-color:var(--line-strong)}
+.link{color:var(--pine);font-weight:500;text-decoration:none;background:none;border:0;padding:4px 0;font-size:13.5px}
+.link:hover{text-decoration:underline}
+.link.danger{color:var(--bad)}
+
+/* Lists */
+.list{background:var(--surface);border:1px solid var(--line);border-radius:18px;margin-bottom:14px;overflow:hidden}
+.list-head{display:flex;align-items:center;gap:6px;padding:8px 8px 8px 10px;position:relative}
+.chev{width:38px;height:38px;border:0;background:none;border-radius:10px;display:grid;place-items:center;color:var(--muted);flex:none}
+.chev svg{transition:transform .18s ease}
+.chev[aria-expanded="false"] svg{transform:rotate(90deg)}
+.list-title{flex:1;min-width:0;border:0;background:none;font-size:18px;font-weight:600;padding:6px 2px;border-radius:8px}
+.list-title::placeholder{color:var(--muted);font-weight:500}
+.chip{font-size:12.5px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.chip b{color:var(--pine);font-weight:700}
+.sep{display:inline-block;width:1px;height:12px;background:var(--line-strong);margin:0 7px;vertical-align:-1px}
+.more{width:36px;height:36px;border:0;background:none;border-radius:10px;display:grid;place-items:center;color:var(--muted);flex:none}
+.more:hover,.chev:hover{background:var(--surface-2)}
+.bar{height:3px;background:var(--line);position:absolute;inset:auto 0 0 0}
+.bar i{display:block;height:100%;background:var(--pine);width:0;margin-inline-start:0;transition:width .25s ease}
+.items,.kids{list-style:none;margin:0;padding:0}
+.kids{padding:0;border-inline-start:2px solid var(--line);margin-inline-start:22px}
+@media (min-width:600px){.kids{margin-inline-start:34px}}
+.row{display:flex;align-items:center;gap:6px;padding:5px 10px;border-top:1px solid var(--line);min-height:58px}
+.kids .row{min-height:52px}
+.num{min-width:2.1em;color:var(--muted);font-weight:600;font-size:14px;font-variant-numeric:tabular-nums;text-align:center;flex:none}
+.txt{flex:1;min-width:0;border:0;background:none;padding:8px 4px;border-radius:8px;font-size:16px}
+.txt::placeholder{color:var(--muted)}
+.item.is-done>.row .txt{text-decoration:line-through;text-decoration-thickness:1.5px;color:var(--muted)}
+.kid-toggle{width:30px;height:30px;border:0;background:none;color:var(--muted);border-radius:8px;display:grid;place-items:center;flex:none}
+.kid-toggle[aria-expanded="false"] svg{transform:rotate(90deg)}
+.box{flex:none;width:48px;height:48px;border-radius:13px;border:1.5px dashed var(--line-strong);background:var(--surface);color:var(--muted);display:grid;place-items:center;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;padding:0}
+.box:hover{border-color:var(--pine)}
+.box.st-yes{border:1.5px solid var(--ok);background:var(--ok-soft);color:var(--ok)}
+.box.st-no{border:1.5px solid var(--bad);background:var(--bad-soft);color:var(--bad)}
+.box.st-pct{border:1.5px solid var(--pine);color:var(--pine);background:linear-gradient(to top,var(--pine-soft) calc(var(--p) * 1%),var(--surface) calc(var(--p) * 1%))}
+.box .auto{font-weight:500;font-size:12px}
+.add-row{display:flex;gap:8px;padding:10px;border-top:1px solid var(--line);background:var(--surface-2)}
+.add-row input{flex:1;min-width:0;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 12px}
+.add-row button{border:0;background:var(--pine-soft);color:var(--pine);border-radius:12px;padding:0 14px;font-weight:600;display:flex;align-items:center;gap:4px}
+.empty{text-align:center;padding:42px 20px;border:1.5px dashed var(--line-strong);border-radius:18px;color:var(--muted)}
+.empty b{display:block;color:var(--ink);font-size:18px;margin-bottom:4px}
+.empty .primary{margin-top:14px}
+
+/* Forms & cards */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:16px}
+.field{display:flex;flex-direction:column;gap:4px;margin-bottom:12px;min-width:0}
+.field label{font-size:13px;color:var(--muted);font-weight:500}
+.field input,.field select{width:100%;border:1px solid var(--line);background:var(--surface-2);border-radius:12px;padding:10px 12px;min-height:46px}
+.grid3{display:grid;grid-template-columns:1fr;gap:0 12px}
+@media (min-width:600px){.grid3{grid-template-columns:1.4fr 1fr 1fr}}
+.form-foot{display:flex;gap:8px;justify-content:flex-end;align-items:center;flex-wrap:wrap}
+.err{color:var(--bad);font-size:13.5px;margin:8px 0 0}
+.notice{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13.5px;color:var(--muted);margin:0 0 16px;line-height:1.7}
+.group-title{font-size:15px;font-weight:600;color:var(--muted);margin:20px 4px 8px}
+.rems{background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.rem{display:flex;gap:14px;padding:14px 16px;border-top:1px solid var(--line);align-items:flex-start}
+.rem:first-child{border-top:0}
+.rem-when{flex:none;min-width:84px;text-align:center;padding:6px 4px;border-radius:12px;background:var(--surface-2)}
+.rem-when b{display:block;font-size:17px;font-variant-numeric:tabular-nums;line-height:1.3}
+.rem-when span{font-size:12px;color:var(--muted)}
+.rem.soon .rem-when{background:var(--gold-soft)}
+.rem.soon .rem-when b{color:var(--gold)}
+.rem-body{flex:1;min-width:0}
+.rem-title{font-weight:600;overflow-wrap:anywhere}
+.rem-meta{font-size:13px;color:var(--muted)}
+.rem-note{font-size:14px;margin-top:2px;overflow-wrap:anywhere}
+.rem-actions{display:flex;gap:14px;flex-wrap:wrap;margin-top:6px}
+.rem.past{opacity:.7}
+.rem.past .rem-title{text-decoration:line-through}
+.badge{display:inline-block;font-size:11.5px;background:var(--pine-soft);color:var(--pine);padding:1px 8px;border-radius:99px;margin-inline-start:6px;font-weight:600;vertical-align:middle}
+
+/* Scratch pad */
+.pad{width:100%;min-height:calc(100dvh - 280px);border:1px solid var(--line);border-radius:18px;background-color:var(--surface);padding:16px 18px;font-size:17px;line-height:32px;resize:vertical;
+  background-image:repeating-linear-gradient(to bottom,transparent 0 31px,var(--line) 31px 32px);background-position:0 16px;background-attachment:local}
+.pad:focus{outline:2px solid var(--pine);outline-offset:0}
+.pad-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:8px;font-size:13px;color:var(--muted)}
+
+/* Dialogs */
+dialog.sheet{border:0;padding:0;background:var(--surface);color:var(--ink);border-radius:20px;width:min(440px,calc(100vw - 20px));max-height:88dvh;box-shadow:var(--shadow)}
+dialog.sheet::backdrop{background:rgba(8,18,13,.5)}
+@media (max-width:600px){dialog.sheet{margin:auto auto calc(10px + env(safe-area-inset-bottom,0px)) auto}}
+.sheet-head{padding:18px 20px 8px;font-weight:600;font-size:17px;overflow-wrap:anywhere}
+.sheet-head small{display:block;color:var(--muted);font-weight:400;font-size:13px}
+.sheet-body{padding:6px 20px 8px}
+.sheet-foot{display:flex;gap:8px;justify-content:space-between;padding:12px 20px 18px}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.choice{border:1.5px solid var(--line);background:var(--surface);border-radius:14px;padding:14px 8px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px}
+.choice.yes[aria-pressed="true"]{border-color:var(--ok);background:var(--ok-soft);color:var(--ok)}
+.choice.no[aria-pressed="true"]{border-color:var(--bad);background:var(--bad-soft);color:var(--bad)}
+.pct-label{display:flex;justify-content:space-between;font-size:14px;color:var(--muted);margin-bottom:6px}
+.pct-label output{color:var(--pine);font-weight:700;font-size:18px}
+input[type=range]{width:100%;accent-color:var(--pine);height:28px}
+.qchips{display:flex;gap:6px;margin-top:8px}
+.qchips button{flex:1;border:1px solid var(--line);background:var(--surface-2);border-radius:10px;padding:7px 0;font-size:13.5px;font-variant-numeric:tabular-nums}
+.qchips button[aria-pressed="true"]{border-color:var(--pine);color:var(--pine);background:var(--pine-soft);font-weight:700}
+.act-list{display:flex;flex-direction:column;padding:4px 10px 0}
+.act-list button{border:0;background:none;text-align:start;padding:13px 12px;border-radius:12px;font-size:15.5px;display:flex;gap:12px;align-items:center}
+.act-list button:hover{background:var(--surface-2)}
+.act-list button.danger{color:var(--bad)}
+.act-list button:disabled{opacity:.4;cursor:default}
+
+/* Hadith — the one decorative moment */
+#hadith{width:min(520px,calc(100vw - 20px))}
+.hadith-card{position:relative;background:var(--gold-soft);padding:30px 26px 22px;overflow:hidden}
+.hadith-card::before{content:"";position:absolute;inset:0;opacity:.16;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Cg fill='none' stroke='%23A8841A' stroke-width='1.2'%3E%3Crect x='14' y='14' width='28' height='28'/%3E%3Crect x='14' y='14' width='28' height='28' transform='rotate(45 28 28)'/%3E%3Ccircle cx='28' cy='28' r='6'/%3E%3C/g%3E%3C/svg%3E");background-size:56px 56px}
+.hadith-card>*{position:relative}
+.h-intro{font-family:var(--quote);color:var(--gold);font-size:19px;margin:0 0 6px}
+.h-text{font-family:var(--quote);font-size:clamp(23px,5.6vw,29px);line-height:1.85;margin:0;font-weight:700;color:var(--ink)}
+.h-src{margin:14px 0 0;color:var(--muted);font-size:14px}
+.h-foot{display:flex;gap:8px;justify-content:space-between;padding:14px 20px 18px;background:var(--surface)}
+@media (prefers-reduced-motion:no-preference){
+  #hadith[open] .h-text{animation:rise .5s ease both .08s}
+  @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+}
+
+/* Toasts & alarms */
+.toasts{position:fixed;left:0;right:0;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:60;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;padding:0 12px}
+@media (min-width:820px){.toasts{bottom:24px}}
+.toast{pointer-events:auto;background:var(--ink);color:var(--bg);border-radius:14px;padding:10px 14px;display:flex;gap:14px;align-items:center;font-size:14.5px;box-shadow:var(--shadow);max-width:460px}
+.toast button{border:0;background:none;color:var(--pine-soft);font-weight:700;padding:2px 4px}
+.alarms{position:fixed;top:0;left:0;right:0;z-index:70;display:flex;flex-direction:column;align-items:center;gap:8px;padding:calc(env(safe-area-inset-top,0px) + 10px) 12px 0;pointer-events:none}
+.alarm{pointer-events:auto;width:min(460px,100%);background:var(--surface);border:2px solid var(--gold);border-radius:18px;padding:14px 16px;box-shadow:var(--shadow);display:flex;gap:12px;align-items:center}
+.alarm .bell{width:42px;height:42px;border-radius:12px;background:var(--gold-soft);color:var(--gold);display:grid;place-items:center;flex:none}
+.alarm div{flex:1;min-width:0}
+.alarm b{display:block;overflow-wrap:anywhere}
+.alarm span{font-size:13px;color:var(--muted)}
+@media (prefers-reduced-motion:no-preference){.alarm .bell svg{animation:ring 1s ease-in-out 3}@keyframes ring{0%,100%{transform:rotate(0)}25%{transform:rotate(14deg)}75%{transform:rotate(-14deg)}}}
+/* Calendar + projects */
+:root{--i1-bg:#0A0D0B;--i1-fg:#FFFFFF;--i2-bg:#C23A2E;--i2-fg:#FFFFFF;--i3-bg:#FFFFFF;--i3-fg:#1D2B26}
+@media (max-width:520px){.tab{font-size:11px;padding:6px 1px}}
+@media (min-width:820px){.top-inner{flex-wrap:wrap}.tabs{order:3;flex:1 0 100%}.tab{flex:1;justify-content:center}}
+.cal-card{background:var(--surface-2);padding:12px}
+.cal-nav{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.cal-title{flex:1;border:0;background:none;font-size:19px;font-weight:700;padding:6px;border-radius:10px;color:var(--ink)}
+.cal-week,.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.cal-week span{text-align:center;font-size:11.5px;color:var(--muted);padding:2px 0 4px}
+.day{position:relative;aspect-ratio:1/1;min-height:42px;border:1.5px solid transparent;background:transparent;color:var(--ink);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:600;font-size:15px;line-height:1.25;padding:0;font-variant-numeric:tabular-nums}
+.day small{font-size:10px;font-weight:500;opacity:.85}
+.day:hover{border-color:var(--line-strong)}
+.day.blank{visibility:hidden}
+.day.i1{background:var(--i1-bg);color:var(--i1-fg);border-color:var(--ink)}
+.day.i2{background:var(--i2-bg);color:var(--i2-fg);border-color:var(--i2-bg)}
+.day.i3{background:var(--i3-bg);color:var(--i3-fg);border-color:var(--line-strong)}
+.day.fin{opacity:.5}
+.day.today{box-shadow:0 0 0 2px var(--pine)}
+.day.sel{outline:3px solid var(--gold);outline-offset:2px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin:12px 4px 0;font-size:12.5px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw,.dot{display:inline-block;flex:none;border:1.5px solid var(--line-strong);background:var(--surface)}
+.sw{width:14px;height:14px;border-radius:5px}
+.dot{width:12px;height:12px;border-radius:50%}
+.sw.i1,.dot.i1{background:var(--i1-bg);border-color:var(--ink)}
+.sw.i2,.dot.i2{background:var(--i2-bg);border-color:var(--i2-bg)}
+.sw.i3,.dot.i3{background:var(--i3-bg)}
+.day-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.day-head>div{flex:1;min-width:0}
+.day-head h2{font-size:18px;margin:0;font-weight:700}
+.day-sub{font-size:13px;color:var(--muted)}
+.ent{background:var(--surface);border:1px solid var(--line);border-inline-start:6px solid var(--line-strong);border-radius:14px;padding:12px 14px;margin-bottom:10px}
+.ent.i1{border-inline-start-color:var(--ink)}
+.ent.i2{border-inline-start-color:var(--i2-bg)}
+.ent-head{display:flex;align-items:center;gap:10px}
+.ent-main{flex:1;min-width:0;display:flex;flex-direction:column}
+.ent-main b{overflow-wrap:anywhere}
+.ent-sub{font-size:12.5px;color:var(--muted);display:inline-flex;gap:4px;align-items:center}
+.ent.is-done .ent-main b{text-decoration:line-through;color:var(--muted)}
+.imp-tag{font-size:11.5px;font-weight:600;padding:2px 9px;border-radius:99px;border:1.5px solid var(--line-strong);white-space:nowrap}
+.imp-tag.i1{background:var(--i1-bg);color:var(--i1-fg);border-color:var(--ink)}
+.imp-tag.i2{background:var(--i2-bg);color:#fff;border-color:var(--i2-bg)}
+.imp-tag.i3{background:var(--i3-bg);color:var(--i3-fg)}
+.ck{width:30px;height:30px;flex:none;border-radius:9px;border:1.5px solid var(--line-strong);background:var(--surface);color:transparent;display:grid;place-items:center;padding:0}
+.ck svg{width:16px;height:16px}
+.ck.on{background:var(--pine);border-color:var(--pine);color:var(--pine-ink)}
+.sched{list-style:none;margin:8px 0 0;padding:0}
+.sched li{display:flex;align-items:center;gap:10px;padding:7px 0;border-top:1px dashed var(--line)}
+.sched time{font-size:13px;color:var(--pine);font-weight:600;min-width:62px;font-variant-numeric:tabular-nums}
+.sched li.is-done span{text-decoration:line-through;color:var(--muted)}
+.imp-choices{display:flex;gap:8px;flex-wrap:wrap}
+.impb{flex:1;min-width:84px;border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:9px 8px;font-size:13.5px;font-weight:600;display:flex;gap:6px;align-items:center;justify-content:center}
+.impb[aria-pressed="true"]{border-color:var(--pine);background:var(--pine-soft);color:var(--pine)}
+.lbl{display:block;font-size:13px;color:var(--muted);font-weight:500;margin:0 0 4px}
+.ev-row{display:flex;gap:6px;align-items:center;margin-bottom:6px}
+.ev-row input{border:1px solid var(--line);background:var(--surface-2);border-radius:12px;padding:9px 10px;min-height:44px;min-width:0}
+.ev-row input[type=time]{width:118px;flex:none;direction:ltr}
+.ev-row input[data-rf=text]{flex:1}
+.proj{background:var(--surface);border:1px solid var(--line);border-radius:18px;margin-bottom:14px;overflow:hidden;scroll-margin-top:90px}
+.proj-body{padding:4px 14px 16px;border-top:1px solid var(--line)}
+.imp-row{margin:12px 0}
+.pnotes{width:100%;min-height:110px;border:1px solid var(--line);background:var(--surface-2);border-radius:14px;padding:12px;resize:vertical;line-height:1.8}
+.sec{font-size:15px;margin:18px 0 8px;font-weight:700}
+.hint2{font-size:13px;color:var(--muted);margin:-4px 0 8px}
+.plist{border:1px solid var(--line);border-radius:14px;margin-bottom:10px;overflow:hidden}
+.plist-head{display:flex;align-items:center;gap:6px;padding:6px 8px 6px 10px;background:var(--surface-2)}
+.plist-title{flex:1;min-width:0;border:0;background:none;font-weight:600;font-size:16px;padding:6px 2px}
+.pitems{list-style:none;margin:0;padding:0}
+.pitems li{display:flex;align-items:center;gap:8px;padding:4px 10px;border-top:1px solid var(--line);min-height:50px}
+.pitems li.is-done .txt{text-decoration:line-through;color:var(--muted)}
+.ghost.sm{padding:7px 12px;font-size:14px;display:inline-flex;gap:6px;align-items:center}
+.mile{display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--line);border-radius:14px;margin-bottom:8px;flex-wrap:wrap}
+.mile-main{flex:1;min-width:150px;display:flex;flex-direction:column}
+.mile-when{font-size:12.5px;color:var(--muted);padding:0 4px}
+.mile.late .mile-when{color:var(--bad);font-weight:600}
+.mile.is-done .txt{text-decoration:line-through;color:var(--muted)}
+.mile-date{border:1px solid var(--line);background:var(--surface-2);border-radius:10px;padding:7px 8px;min-height:40px;direction:ltr}
+.ms-add{border:1px solid var(--line);border-radius:14px}
+.ms-add .ms-new-date{flex:0 0 150px;direction:ltr}
+
+/* Scratch pad + YouTube side by side */
+body[data-view="notes"] .top-inner,body[data-view="notes"] main{max-width:1180px}
+.notes-grid{display:grid;grid-template-columns:1fr;gap:16px;align-items:start}
+.yt{display:flex;flex-direction:column;gap:10px;order:-1}
+@media (min-width:900px){
+  .notes-grid{grid-template-columns:1fr 1fr}
+  .yt{order:0;position:sticky;top:calc(env(safe-area-inset-top,0px) + 76px)}
+}
+.yt-bar{display:flex;gap:8px}
+.yt-bar input{flex:1;min-width:0;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 12px;direction:ltr;text-align:left}
+.yt-frame{aspect-ratio:16/9;width:100%;border-radius:18px;overflow:hidden;background:#000;border:1px solid var(--line)}
+.yt-frame iframe{width:100%;height:100%;border:0;display:block}
+.yt-frame.empty{background:var(--surface);border:1.5px dashed var(--line-strong);display:grid;place-items:center;color:var(--muted);text-align:center;padding:20px;font-size:14.5px;line-height:1.8}
+.yt-msg{font-size:13px;color:var(--muted);margin:0 4px}
+
+/* Prayer times */
+.pr-next{background:var(--pine-soft);border:1px solid var(--line);border-radius:18px;padding:18px 20px;margin-bottom:14px;display:flex;flex-direction:column;gap:2px}
+.pr-next small{color:var(--muted);font-size:13px}
+.pr-next b{font-size:30px;font-weight:700;color:var(--pine);line-height:1.35}
+.pr-next span{font-size:15px}
+.pr-list{background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden;margin-bottom:14px}
+.pr-row{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-top:1px solid var(--line)}
+.pr-row:first-child{border-top:0}
+.pr-row b{font-weight:600}
+.pr-row time{font-variant-numeric:tabular-nums;font-weight:600}
+.pr-row.sun,.pr-row.past{color:var(--muted)}
+.pr-row.past b{font-weight:500}
+.pr-row.next{background:var(--gold-soft)}
+.pr-row.next b,.pr-row.next time{color:var(--gold)}
+.pr-set{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap}
+.pr-set .field{flex:1;min-width:160px;margin-bottom:12px}
+.pr-set .ghost{margin-bottom:12px}
+.pr-check{display:flex;gap:10px;align-items:center;margin:4px 0 0;font-size:14.5px}
+.pr-check input{width:20px;height:20px;accent-color:var(--pine)}
+.pr-note{font-size:12.5px;color:var(--muted);margin:10px 4px 0;line-height:1.8}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand"><b>دفتري</b><span id="today"></span></div>
+    <div class="spacer"></div>
+    <nav class="tabs" aria-label="الأقسام">
+      <button class="tab" data-view="lists" aria-current="page">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M10 6h10M10 12h10M10 18h10"/><path d="M4 6h1.5M4 12h1.5M4 18h1.5" stroke-width="2.6"/></svg>
+        <span>الجداول</span></button>
+      <button class="tab" data-view="reminders">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+        <span>المواعيد</span></button>
+      <button class="tab" data-view="calendar">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        <span>التقويم</span></button>
+      <button class="tab" data-view="projects">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/></svg>
+        <span>المشاريع</span></button>
+      <button class="tab" data-view="prayer">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 1 1 9.5 3.5a6.8 6.8 0 0 0 11 11Z"/></svg>
+        <span>الصلاة</span></button>
+      <button class="tab" data-view="notes">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+        <span>التفريغ</span></button>
+    </nav>
+    <span class="pill" id="pill" data-s="local" title="البيانات محفوظة على الجهاز ده"><i></i><span>على الجهاز ده</span></span>
+    <button class="icon-btn" id="open-hadith" aria-label="اعرض حديث النهارده" title="حديث النهارده">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+    </button>
+  </div>
+</header>
+
+<main>
+  <!-- Lists -->
+  <section class="view" id="view-lists">
+    <div class="view-head">
+      <h1>جداولي</h1>
+      <button class="primary" id="new-list">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        قائمة جديدة</button>
+    </div>
+    <p class="hint">اضغط المربع اللي في آخر كل بند عشان تحط ✓ أو ✗ أو نسبة اللي خلصته.</p>
+    <div id="lists"></div>
+  </section>
+
+  <!-- Reminders -->
+  <section class="view" id="view-reminders" hidden>
+    <div class="view-head"><h1>المواعيد</h1></div>
+    <div class="card">
+      <div class="field"><label for="r-title">الميعاد</label><input id="r-title" placeholder="مثلاً: دكتور الأسنان" autocomplete="off"></div>
+      <div class="grid3">
+        <div class="field"><label for="r-at">امتى</label><input id="r-at" type="datetime-local"></div>
+        <div class="field"><label for="r-before">أفكرك</label><select id="r-before"></select></div>
+        <div class="field"><label for="r-repeat">يتكرر</label><select id="r-repeat"></select></div>
+      </div>
+      <div class="field"><label for="r-note">ملاحظة (اختياري)</label><input id="r-note" autocomplete="off"></div>
+      <div class="form-foot">
+        <button class="ghost" id="r-cancel" hidden>إلغاء التعديل</button>
+        <button class="primary" id="r-save">حفظ التذكير</button>
+      </div>
+      <p class="err" id="r-err" hidden></p>
+    </div>
+    <p class="notice" id="notify-row"></p>
+    <div id="rem-list"></div>
+  </section>
+
+  <!-- Calendar -->
+  <section class="view" id="view-calendar" hidden>
+    <div class="view-head"><h1>التقويم</h1></div>
+    <div class="card cal-card">
+      <div class="cal-nav">
+        <button class="icon-btn" id="cal-prev" aria-label="الشهر اللي فات"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+        <button class="cal-title" id="cal-title" title="ارجع للنهارده"></button>
+        <button class="icon-btn" id="cal-next" aria-label="الشهر اللي جاي"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+      </div>
+      <div class="cal-week" aria-hidden="true"><span>سبت</span><span>أحد</span><span>اتنين</span><span>تلات</span><span>أربع</span><span>خميس</span><span>جمعة</span></div>
+      <div class="cal-grid" id="cal-grid"></div>
+      <div class="legend"><span><i class="sw i1"></i>مهم جدًا (أسود)</span><span><i class="sw i2"></i>مهم (أحمر)</span><span><i class="sw i3"></i>عادي (أبيض)</span></div>
+    </div>
+    <div class="card" id="day-panel">
+      <div class="day-head">
+        <div><h2 id="day-title"></h2><span class="day-sub" id="day-sub"></span></div>
+        <button class="primary" id="day-add"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>جدول أو ميعاد</button>
+      </div>
+      <div id="day-list"></div>
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section class="view" id="view-projects" hidden>
+    <div class="view-head">
+      <h1>مشاريعي</h1>
+      <button class="primary" id="new-proj"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>مشروع جديد</button>
+    </div>
+    <p class="hint">اكتب عن كل مشروع، واعمله جداول، وحدد محطات بتواريخ. المحطات بتظهر في التقويم بلون أهمية المشروع.</p>
+    <div id="projects"></div>
+  </section>
+
+  <!-- Prayer times -->
+  <section class="view" id="view-prayer" hidden>
+    <div class="view-head"><h1>مواعيد الصلاة</h1></div>
+    <div class="pr-next" id="pr-next" aria-live="polite"></div>
+    <div class="pr-list" id="pr-list"></div>
+    <div class="card">
+      <div class="pr-set">
+        <div class="field"><label for="pr-city">المدينة</label><select id="pr-city"></select></div>
+        <button class="ghost" id="pr-geo">استخدم موقعي</button>
+      </div>
+      <label class="pr-check"><input type="checkbox" id="pr-alert">نبّهني بصوت وقت كل صلاة (والصفحة مفتوحة)</label>
+    </div>
+    <p class="pr-note">المواعيد بتتحسب جوه الصفحة من غير نت، بطريقة الهيئة المصرية العامة للمساحة (الفجر ١٩٫٥° والعشاء ١٧٫٥°) والعصر بظل المثل. ممكن تفرق دقيقة أو اتنين عن التقويم الرسمي، فاطمّن على تقويم الأوقاف أو تطبيقك المعتاد.</p>
+  </section>
+
+  <!-- Scratch pad -->
+  <section class="view" id="view-notes" hidden>
+    <div class="view-head"><h1>مساحة التفريغ</h1></div>
+    <div class="notes-grid">
+    <div class="notes-col">
+    <label class="sr" for="pad">مساحة التفريغ</label>
+    <textarea id="pad" class="pad" placeholder="اكتب أي حاجة في دماغك… بيتحفظ لوحده."></textarea>
+    <div class="pad-foot"><span id="pad-info"></span><button class="link danger" id="pad-clear">امسح الكل</button></div>
+    </div>
+    <aside class="yt" aria-label="يوتيوب">
+      <div class="yt-bar">
+        <input id="yt-url" type="url" placeholder="الصق رابط فيديو أو قايمة تشغيل يوتيوب" autocomplete="off" aria-label="رابط يوتيوب">
+        <button class="primary" id="yt-go">شغّل</button>
+      </div>
+      <div class="yt-frame empty" id="yt-frame"></div>
+      <p class="yt-msg" id="yt-msg"></p>
+    </aside>
+    </div>
+  </section>
+</main>
+
+<!-- Calendar entry editor -->
+<dialog class="sheet" id="ev-dlg" aria-labelledby="ev-head">
+  <div class="sheet-head" id="ev-head"></div>
+  <div class="sheet-body">
+    <div class="field"><label for="ev-title">الاسم</label><input id="ev-title" placeholder="مثلاً: جدول يوم المذاكرة" autocomplete="off"></div>
+    <div class="field"><label for="ev-date">اليوم</label><input id="ev-date" type="date"></div>
+    <div class="field"><span class="lbl">الأهمية (لون اليوم في التقويم)</span>
+      <div class="imp-choices" id="ev-imp">
+        <button type="button" class="impb" data-imp="1"><i class="sw i1"></i>مهم جدًا</button>
+        <button type="button" class="impb" data-imp="2"><i class="sw i2"></i>مهم</button>
+        <button type="button" class="impb" data-imp="3"><i class="sw i3"></i>عادي</button>
+      </div>
+    </div>
+    <div class="field"><label for="ev-note">ملاحظة (اختياري)</label><input id="ev-note" autocomplete="off"></div>
+    <span class="lbl">الجدول (بنود بالساعة)</span>
+    <div id="ev-items"></div>
+    <button type="button" class="link" id="ev-add-item">+ بند في الجدول</button>
+    <p class="err" id="ev-err" hidden></p>
+  </div>
+  <div class="sheet-foot">
+    <button class="link danger" id="ev-del" hidden>حذف</button>
+    <span class="spacer"></span>
+    <button class="ghost" id="ev-cancel">إلغاء</button>
+    <button class="primary" id="ev-save">حفظ</button>
+  </div>
+</dialog>
+
+<!-- Status editor -->
+<dialog class="sheet" id="status-dlg" aria-labelledby="st-title">
+  <div class="sheet-head" id="st-title"></div>
+  <div class="sheet-body">
+    <div class="choices">
+      <button class="choice yes" data-st="yes" aria-pressed="false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>خلصت</button>
+      <button class="choice no" data-st="no" aria-pressed="false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"/></svg>ماخلصتش</button>
+    </div>
+    <div class="pct-label"><label for="st-range">أو خلصت كام في المية؟</label><output id="st-out" for="st-range"></output></div>
+    <input type="range" id="st-range" min="0" max="100" step="5">
+    <div class="qchips" id="st-chips"></div>
+  </div>
+  <div class="sheet-foot">
+    <button class="ghost" data-st="none">امسح العلامة</button>
+    <button class="primary" data-close>تمام</button>
+  </div>
+</dialog>
+
+<!-- Action sheet -->
+<dialog class="sheet" id="act-dlg" aria-labelledby="act-title">
+  <div class="sheet-head" id="act-title"></div>
+  <div class="act-list" id="act-list"></div>
+  <div class="sheet-foot"><span></span><button class="ghost" data-close>إلغاء</button></div>
+</dialog>
+
+<!-- Hadith -->
+<dialog class="sheet" id="hadith" aria-labelledby="h-text">
+  <div class="hadith-card">
+    <p class="h-intro">قال رسول الله ﷺ:</p>
+    <p class="h-text" id="h-text"></p>
+    <p class="h-src" id="h-src"></p>
+  </div>
+  <div class="h-foot">
+    <button class="ghost" id="h-next">حديث تاني</button>
+    <button class="primary" data-close>يلا نبدأ</button>
+  </div>
+</dialog>
+
+<div class="alarms" id="alarms" aria-live="assertive"></div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script>
+(() => {
+'use strict';
+
+/* ---------- helpers ---------- */
+const AR = 'ar-EG';
+const nf = new Intl.NumberFormat(AR);
+const n = x => nf.format(x);
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const gid = () => Math.random().toString(36).slice(2, 9) + Date.now().toString(36).slice(-4);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const avg = a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : 0;
+const clone = v => JSON.parse(JSON.stringify(v));
+
+const LSK = 'daftari.v1.';
+const lsGet = (k, d) => { try { const v = localStorage.getItem(LSK + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } };
+const lsSet = (k, v) => { try { localStorage.setItem(LSK + k, JSON.stringify(v)); } catch (e) {} };
+
+let DEVICE = lsGet('device', null);
+if (!DEVICE) { DEVICE = gid(); lsSet('device', DEVICE); }
+
+const ICON = {
+  chev: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>',
+  chevSm: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>',
+  dots: '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="19" cy="12" r="1.9"/></svg>',
+  check: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  x: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"/></svg>',
+  plus: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>',
+  bell: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>'
+};
+
+/* ---------- hadith ---------- */
+const H = [
+  ['إنما الأعمال بالنيات، وإنما لكل امرئ ما نوى', 'متفق عليه'],
+  ['من حسن إسلام المرء تركه ما لا يعنيه', 'رواه الترمذي'],
+  ['لا يؤمن أحدكم حتى يحب لأخيه ما يحب لنفسه', 'متفق عليه'],
+  ['الكلمة الطيبة صدقة', 'متفق عليه'],
+  ['تبسّمك في وجه أخيك لك صدقة', 'رواه الترمذي'],
+  ['أحب الأعمال إلى الله أدومها وإن قلّ', 'متفق عليه'],
+  ['المؤمن القوي خير وأحب إلى الله من المؤمن الضعيف، وفي كلٍّ خير، احرص على ما ينفعك، واستعن بالله ولا تعجز', 'رواه مسلم'],
+  ['من كان يؤمن بالله واليوم الآخر فليقل خيرًا أو ليصمت', 'متفق عليه'],
+  ['نعمتان مغبون فيهما كثير من الناس: الصحة والفراغ', 'رواه البخاري'],
+  ['اتق الله حيثما كنت، وأتبع السيئة الحسنة تمحها، وخالق الناس بخلق حسن', 'رواه الترمذي'],
+  ['ليس الشديد بالصُّرَعة، إنما الشديد الذي يملك نفسه عند الغضب', 'متفق عليه'],
+  ['من سلك طريقًا يلتمس فيه علمًا سهّل الله له به طريقًا إلى الجنة', 'رواه مسلم'],
+  ['يسّروا ولا تعسّروا، وبشّروا ولا تنفّروا', 'متفق عليه'],
+  ['اغتنم خمسًا قبل خمس: شبابك قبل هرمك، وصحتك قبل سقمك، وغناك قبل فقرك، وفراغك قبل شغلك، وحياتك قبل موتك', 'رواه الحاكم'],
+  ['المسلم من سلم المسلمون من لسانه ويده', 'متفق عليه'],
+  ['إن الله رفيق يحب الرفق في الأمر كله', 'متفق عليه'],
+  ['اللهم بارك لأمتي في بكورها', 'رواه أبو داود والترمذي'],
+  ['لا يشكر اللهَ من لا يشكر الناس', 'رواه أبو داود'],
+  ['خيركم من تعلّم القرآن وعلّمه', 'رواه البخاري'],
+  ['احفظ الله يحفظك، احفظ الله تجده تجاهك', 'رواه الترمذي'],
+  ['إن الله لا ينظر إلى صوركم وأموالكم، ولكن ينظر إلى قلوبكم وأعمالكم', 'رواه مسلم'],
+  ['الطُّهور شطر الإيمان', 'رواه مسلم'],
+  ['ما نقصت صدقة من مال', 'رواه مسلم'],
+  ['كلمتان خفيفتان على اللسان، ثقيلتان في الميزان، حبيبتان إلى الرحمن: سبحان الله وبحمده، سبحان الله العظيم', 'متفق عليه'],
+  ['لا تحقرنّ من المعروف شيئًا، ولو أن تلقى أخاك بوجه طلق', 'رواه مسلم'],
+  ['إن الله كتب الإحسان على كل شيء', 'رواه مسلم'],
+  ['الدين النصيحة', 'رواه مسلم'],
+  ['لا تغضب', 'رواه البخاري'],
+  ['إن الله يحب إذا عمل أحدكم عملًا أن يتقنه', 'رواه الطبراني والبيهقي'],
+  ['أحب الناس إلى الله أنفعهم للناس', 'رواه الطبراني'],
+  ['من دلّ على خير فله مثل أجر فاعله', 'رواه مسلم'],
+  ['الراحمون يرحمهم الرحمن، ارحموا من في الأرض يرحمكم من في السماء', 'رواه أبو داود والترمذي'],
+  ['إن من أحبكم إليّ أحسنكم أخلاقًا', 'رواه البخاري'],
+  ['إذا مات الإنسان انقطع عنه عمله إلا من ثلاثة: إلا من صدقة جارية، أو علم يُنتفع به، أو ولد صالح يدعو له', 'رواه مسلم'],
+  ['ازهد في الدنيا يحبك الله، وازهد فيما عند الناس يحبك الناس', 'رواه ابن ماجه']
+];
+function shuffle(a){ for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function nextHadith(){
+  let deck = lsGet('hdeck', null), i = lsGet('hidx', -1);
+  if (!Array.isArray(deck) || deck.length !== H.length) { deck = shuffle([...H.keys()]); i = -1; }
+  i++;
+  if (i >= deck.length) {
+    const last = deck[deck.length - 1];
+    deck = shuffle([...H.keys()]);
+    if (deck[0] === last) [deck[0], deck[1]] = [deck[1], deck[0]];
+    i = 0;
+  }
+  lsSet('hdeck', deck); lsSet('hidx', i);
+  return H[deck[i]];
+}
+let curHadith = nextHadith();
+function showHadith(h){
+  $('#h-text').textContent = '«' + h[0] + '»';
+  $('#h-src').textContent = h[1];
+}
+
+/* ---------- state ---------- */
+function seedLists(){
+  return [{
+    id: gid(), title: 'مثال: مهام النهارده', open: true,
+    items: [
+      { id: gid(), text: 'أرتّب مكتبي', status: { t: 'yes' }, children: [] },
+      { id: gid(), text: 'أذاكر الفصل التاني', status: { t: 'pct', p: 40 }, children: [] },
+      { id: gid(), text: 'مشاوير', status: { t: 'none' }, children: [
+        { id: gid(), text: 'أشتري خضار', status: { t: 'yes' }, children: [] },
+        { id: gid(), text: 'أدفع فاتورة النت', status: { t: 'no' }, children: [] }
+      ] }
+    ]
+  }];
+}
+const KEYS = ['lists', 'reminders', 'notes', 'plan'];
+const S = {
+  lists: lsGet('lists', null) || { v: seedLists(), updatedAt: 0 },
+  reminders: lsGet('reminders', null) || { v: [], updatedAt: 0 },
+  notes: lsGet('notes', null) || { v: { text: '' }, updatedAt: 0 },
+  plan: lsGet('plan', null) || { v: { events: [], projects: [] }, updatedAt: 0 }
+};
+
+/* ---------- sync (db per-person, falls back to this device) ---------- */
+const sync = { db: null, uid: null, on: false, writing: {}, dirty: {}, timers: {}, pendingRemote: {} };
+const PILL = {
+  local: ['على الجهاز ده', 'البيانات محفوظة على الجهاز ده بس'],
+  connecting: ['بيوصل…', 'بيوصل للمزامنة'],
+  syncing: ['بيحفظ…', 'بيحفظ التعديلات'],
+  synced: ['متزامن', 'محفوظ في حسابك، وهتلاقيه على التليفون والكمبيوتر'],
+  offline: ['المزامنة واقفة', 'مش قادر يوصل للمزامنة دلوقتي؛ تعديلاتك محفوظة على الجهاز ده']
+};
+function setPill(s){
+  const p = $('#pill'); p.dataset.s = s;
+  p.lastElementChild.textContent = PILL[s][0]; p.title = PILL[s][1];
+}
+function docRef(key){ return sync.db.doc('data/users/' + sync.uid + '/' + key); }
+
+function commit(key, opts = {}){
+  S[key].updatedAt = Date.now(); S[key].device = DEVICE;
+  lsSet(key, S[key]);
+  if (sync.on) {
+    sync.dirty[key] = true;
+    clearTimeout(sync.timers[key]);
+    sync.timers[key] = setTimeout(() => push(key), 700);
+  }
+  if (opts.render !== false) renderKey(key);
+}
+async function push(key, retried){
+  if (!sync.on) return;
+  if (sync.writing[key]) { sync.dirty[key] = true; return; }
+  sync.writing[key] = true; sync.dirty[key] = false; setPill('syncing');
+  try {
+    await docRef(key).set({ v: clone(S[key].v), updatedAt: S[key].updatedAt, device: DEVICE });
+    setPill('synced');
+  } catch (e) {
+    const code = e && e.code;
+    if (code === 'unavailable' && !retried) {
+      sync.writing[key] = false;
+      setTimeout(() => push(key, true), 800 + Math.random() * 1200);
+      return;
+    }
+    if (code === 'quota_exceeded') toast('المساحة المتاحة للمزامنة اتملت. امسح شوية حاجات قديمة.');
+    if (['invalid_argument', 'not_granted', 'revoked', 'capability_disabled', 'capability_removed'].includes(code)) { sync.on = false; setPill('local'); }
+    else setPill('offline');
+  } finally {
+    sync.writing[key] = false;
+    if (sync.dirty[key] && sync.on) push(key);
+  }
+}
+function isEditing(key){
+  const a = document.activeElement;
+  if (key === 'lists') return !!(a && a.closest && a.closest('#lists') && a.matches('input'));
+  if (key === 'plan') return !!(a && a.closest && a.closest('#view-projects, #ev-dlg') && a.matches('input,textarea'));
+  if (key === 'notes') return a === $('#pad');
+  return false;
+}
+function applyRemote(key, d){
+  S[key] = { v: d.v, updatedAt: d.updatedAt, device: d.device };
+  lsSet(key, S[key]);
+  renderKey(key);
+}
+function onRemote(key, snap){
+  if (!snap.exists) {
+    if (!snap.metadata.fromCache && S[key].updatedAt > 0) push(key);
+    return;
+  }
+  const d = snap.data();
+  if (!d || typeof d.updatedAt !== 'number' || d.v === undefined) return;
+  if (d.updatedAt <= S[key].updatedAt) return;
+  if (isEditing(key)) { sync.pendingRemote[key] = d; return; }
+  applyRemote(key, d);
+}
+document.addEventListener('focusout', () => setTimeout(() => {
+  for (const key of KEYS) {
+    const d = sync.pendingRemote[key];
+    if (d && !isEditing(key)) { delete sync.pendingRemote[key]; if (d.updatedAt > S[key].updatedAt) applyRemote(key, d); }
+  }
+}, 0));
+
+async function initSync(){
+  if (!window.claude || typeof window.claude.use !== 'function') { setPill('local'); return; }
+  setPill('connecting');
+  let db = null, user = null;
+  try { [db, user] = await Promise.all([window.claude.use('db'), window.claude.use('user')]); } catch (e) {}
+  if (!db || !user) { setPill('local'); return; }
+  const uid = await user.id();
+  if (!uid) { setPill('local'); return; }
+  sync.db = db; sync.uid = uid; sync.on = true;
+  let confirmed = 0;
+  const timer = setTimeout(() => { if (confirmed < KEYS.length && sync.on) setPill('offline'); }, 10000);
+  KEYS.forEach(key => {
+    let first = true;
+    try {
+      docRef(key).onSnapshot(snap => {
+        if (first && !snap.metadata.fromCache) {
+          first = false; confirmed++;
+          if (confirmed === KEYS.length) { clearTimeout(timer); setPill('synced'); }
+        }
+        onRemote(key, snap);
+      }, err => {
+        clearTimeout(timer);
+        if (err && (err.code === 'revoked' || err.code === 'not_granted')) { sync.on = false; setPill('local'); }
+        else setPill('offline');
+      });
+    } catch (e) { clearTimeout(timer); sync.on = false; setPill('local'); }
+  });
+}
+
+/* ---------- toasts, undo ---------- */
+function toast(msg, opts = {}){
+  const el = document.createElement('div');
+  el.className = 'toast';
+  const s = document.createElement('span'); s.textContent = msg; el.append(s);
+  if (opts.action) {
+    const b = document.createElement('button'); b.textContent = opts.action;
+    b.onclick = () => { opts.fn(); el.remove(); };
+    el.append(b);
+  }
+  $('#toasts').append(el);
+  setTimeout(() => el.remove(), opts.ms || 5500);
+}
+function withUndo(key, msg, mutate){
+  const before = clone(S[key].v);
+  mutate();
+  commit(key);
+  toast(msg, { action: 'تراجع', fn: () => { S[key].v = before; commit(key); } });
+}
+
+/* ---------- views ---------- */
+let currentView = lsGet('view', 'lists');
+function setView(v){
+  if (!['lists', 'reminders', 'calendar', 'projects', 'prayer', 'notes'].includes(v)) v = 'lists';
+  currentView = v; lsSet('view', v);
+  $$('.view').forEach(s => s.hidden = s.id !== 'view-' + v);
+  $$('.tab').forEach(t => { if (t.dataset.view === v) t.setAttribute('aria-current', 'page'); else t.removeAttribute('aria-current'); });
+  if (v === 'reminders') renderReminders();
+  if (v === 'prayer') renderPrayer();
+  if (v === 'calendar') renderCalendar();
+  if (v === 'projects') renderProjects();
+  document.body.dataset.view = v;
+  if (v === 'notes') ytShow();
+  window.scrollTo(0, 0);
+}
+$$('.tab').forEach(t => t.addEventListener('click', () => setView(t.dataset.view)));
+function renderKey(key){
+  if (key === 'lists') renderLists();
+  else if (key === 'reminders') renderReminders();
+  else if (key === 'plan') renderPlan();
+  else renderNotes();
+}
+
+/* ---------- lists ---------- */
+const lists = () => S.lists.v;
+function pctOf(it){
+  const s = it.status || { t: 'none' };
+  if (s.t === 'yes') return 100;
+  if (s.t === 'no') return 0;
+  if (s.t === 'pct') return s.p || 0;
+  if (it.children && it.children.length) return Math.round(avg(it.children.map(pctOf)));
+  return 0;
+}
+function findItem(id, arr = null, list = null){
+  const scan = (items, l, parent) => {
+    for (let i = 0; i < items.length; i++) {
+      const it = items[i];
+      if (it.id === id) return { item: it, arr: items, idx: i, list: l, parent };
+      if (it.children && it.children.length) { const r = scan(it.children, l, it); if (r) return r; }
+    }
+    return null;
+  };
+  for (const l of lists()) { const r = scan(l.items, l, null); if (r) return r; }
+  return null;
+}
+const findList = id => lists().find(l => l.id === id);
+const newItem = (text = '') => ({ id: gid(), text, status: { t: 'none' }, children: [] });
+
+function boxInner(it){
+  const s = it.status || { t: 'none' };
+  if (s.t === 'yes') return ICON.check;
+  if (s.t === 'no') return ICON.x;
+  if (s.t === 'pct') return n(s.p || 0) + '٪';
+  if (it.children && it.children.length) return '<span class="auto">' + n(pctOf(it)) + '٪</span>';
+  return '';
+}
+function statusLabel(it){
+  const s = it.status || { t: 'none' };
+  if (s.t === 'yes') return 'خلصت';
+  if (s.t === 'no') return 'ماخلصتش';
+  if (s.t === 'pct') return 'خلصت ' + n(s.p || 0) + '٪';
+  return 'من غير علامة';
+}
+function itemHTML(it, label){
+  const s = it.status || { t: 'none' };
+  const kids = it.children || [];
+  const p = pctOf(it);
+  const cls = 'item' + (s.t === 'yes' || (s.t === 'pct' && s.p === 100) ? ' is-done' : '');
+  return `<li class="${cls}" data-id="${it.id}">
+    <div class="row">
+      <span class="num">${label}</span>
+      <input class="txt" data-act="text" value="${esc(it.text)}" placeholder="اكتب البند…" aria-label="البند ${label}" enterkeyhint="next">
+      ${kids.length ? `<button class="kid-toggle" data-act="kids" aria-expanded="${!it.closed}" aria-label="${it.closed ? 'افتح' : 'اطوي'} البنود الفرعية">${ICON.chevSm}</button>` : ''}
+      <button class="more" data-act="item-menu" aria-label="خيارات البند ${label}">${ICON.dots}</button>
+      <button class="box st-${s.t}" data-act="status" style="--p:${p}" aria-label="علامة البند ${label}: ${statusLabel(it)}">${boxInner(it)}</button>
+    </div>
+    ${kids.length && !it.closed ? `<ol class="kids">${kids.map((k, i) => itemHTML(k, label + '.' + n(i + 1))).join('')}</ol>` : ''}
+  </li>`;
+}
+function listHTML(l){
+  const items = l.items || [];
+  const total = items.length;
+  const done = items.filter(it => pctOf(it) === 100).length;
+  const p = Math.round(avg(items.map(pctOf)));
+  const chip = total ? `<b>${n(p)}٪</b><span class="sep"></span>${n(done)} من ${n(total)}` : 'فاضية';
+  return `<section class="list" data-list="${l.id}">
+    <div class="list-head">
+      <button class="chev" data-act="toggle" aria-expanded="${!!l.open}" aria-label="${l.open ? 'اطوي' : 'افتح'} القائمة">${ICON.chev}</button>
+      <input class="list-title" data-act="title" value="${esc(l.title)}" placeholder="اسم القائمة" aria-label="اسم القائمة">
+      <span class="chip">${chip}</span>
+      <button class="more" data-act="list-menu" aria-label="خيارات القائمة">${ICON.dots}</button>
+      <div class="bar" aria-hidden="true"><i style="width:${p}%"></i></div>
+    </div>
+    ${l.open ? `<ol class="items">${items.map((it, i) => itemHTML(it, n(i + 1))).join('')}</ol>
+    <div class="add-row">
+      <input class="new-input" data-act="new" placeholder="بند جديد…" aria-label="بند جديد" enterkeyhint="done">
+      <button data-act="add">${ICON.plus}إضافة</button>
+    </div>` : ''}
+  </section>`;
+}
+function renderLists(focusSel){
+  const wrap = $('#lists');
+  const ls = lists();
+  if (!ls.length) {
+    wrap.innerHTML = `<div class="empty"><b>مفيش قوايم لسه</b>اعمل أول قائمة واكتب فيها البنود بالترتيب.<br><button class="primary" data-act="new-list">${ICON.plus}قائمة جديدة</button></div>`;
+  } else {
+    wrap.innerHTML = ls.map(listHTML).join('');
+  }
+  if (focusSel) { const el = $(focusSel); if (el) { el.focus(); if (el.setSelectionRange) { const v = el.value.length; el.setSelectionRange(v, v); } } }
+}
+function addList(){
+  const l = { id: gid(), title: '', open: true, items: [] };
+  lists().unshift(l);
+  commit('lists', { render: false });
+  renderLists(`[data-list="${l.id}"] .list-title`);
+}
+$('#new-list').addEventListener('click', addList);
+
+function addItemToList(listId, text){
+  const l = findList(listId); if (!l) return;
+  l.items.push(newItem(text)); l.open = true;
+  commit('lists', { render: false });
+  renderLists(`[data-list="${listId}"] .new-input`);
+}
+
+const listsEl = $('#lists');
+listsEl.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const act = b.dataset.act;
+  const sec = b.closest('[data-list]');
+  const li = b.closest('[data-id]');
+  if (act === 'new-list') return addList();
+  if (act === 'toggle') { const l = findList(sec.dataset.list); l.open = !l.open; commit('lists'); return; }
+  if (act === 'add') { const inp = $('.new-input', sec); const v = inp.value.trim(); addItemToList(sec.dataset.list, v); return; }
+  if (act === 'kids') { const f = findItem(li.dataset.id); f.item.closed = !f.item.closed; commit('lists'); return; }
+  if (act === 'status') return openStatus(li.dataset.id);
+  if (act === 'item-menu') return itemMenu(li.dataset.id);
+  if (act === 'list-menu') return listMenu(sec.dataset.list);
+});
+listsEl.addEventListener('input', e => {
+  const t = e.target;
+  if (t.dataset.act === 'text') { const f = findItem(t.closest('[data-id]').dataset.id); if (f) { f.item.text = t.value; commit('lists', { render: false }); } }
+  else if (t.dataset.act === 'title') { const l = findList(t.closest('[data-list]').dataset.list); if (l) { l.title = t.value; commit('lists', { render: false }); } }
+});
+listsEl.addEventListener('keydown', e => {
+  if (e.key !== 'Enter' || e.isComposing) return;
+  const t = e.target;
+  if (t.dataset.act === 'new') { e.preventDefault(); addItemToList(t.closest('[data-list]').dataset.list, t.value.trim()); }
+  else if (t.dataset.act === 'text') {
+    e.preventDefault();
+    const f = findItem(t.closest('[data-id]').dataset.id); if (!f) return;
+    const it = newItem(); f.arr.splice(f.idx + 1, 0, it);
+    commit('lists', { render: false });
+    renderLists(`[data-id="${it.id}"] > .row .txt`);
+  }
+  else if (t.dataset.act === 'title') { e.preventDefault(); t.blur(); }
+});
+
+/* status sheet */
+const stDlg = $('#status-dlg');
+let stId = null;
+[0, 25, 50, 75, 100].forEach(v => {
+  const b = document.createElement('button'); b.type = 'button'; b.dataset.q = v; b.textContent = n(v) + '٪';
+  $('#st-chips').append(b);
+});
+function paintStatus(){
+  const f = findItem(stId); if (!f) return;
+  const s = f.item.status || { t: 'none' };
+  $('#st-title').innerHTML = esc(f.item.text || 'بند من غير اسم') + `<small>${esc(statusLabel(f.item))}</small>`;
+  $$('.choice', stDlg).forEach(b => b.setAttribute('aria-pressed', String(b.dataset.st === s.t)));
+  const p = s.t === 'pct' ? s.p : s.t === 'yes' ? 100 : 0;
+  $('#st-range').value = p;
+  $('#st-out').textContent = s.t === 'pct' ? n(p) + '٪' : '—';
+  $$('#st-chips button').forEach(b => b.setAttribute('aria-pressed', String(s.t === 'pct' && +b.dataset.q === p)));
+}
+function setStatus(st){
+  const f = findItem(stId); if (!f) return;
+  f.item.status = st;
+  commit('lists');
+  paintStatus();
+}
+function openStatus(id){ stId = id; paintStatus(); stDlg.showModal(); }
+stDlg.addEventListener('click', e => {
+  if (e.target === stDlg || e.target.closest('[data-close]')) return stDlg.close();
+  const st = e.target.closest('[data-st]');
+  if (st) {
+    const cur = (findItem(stId)?.item.status || {}).t;
+    if (st.dataset.st === 'none') return setStatus({ t: 'none' });
+    return setStatus(cur === st.dataset.st ? { t: 'none' } : { t: st.dataset.st });
+  }
+  const q = e.target.closest('[data-q]');
+  if (q) setStatus({ t: 'pct', p: +q.dataset.q });
+});
+$('#st-range').addEventListener('input', e => setStatus({ t: 'pct', p: +e.target.value }));
+
+/* action sheet */
+const actDlg = $('#act-dlg');
+function actionSheet(title, actions){
+  $('#act-title').textContent = title;
+  const list = $('#act-list'); list.innerHTML = '';
+  actions.forEach(a => {
+    const b = document.createElement('button');
+    b.textContent = a.label; if (a.danger) b.className = 'danger'; if (a.disabled) b.disabled = true;
+    b.onclick = () => { actDlg.close(); a.fn(); };
+    list.append(b);
+  });
+  actDlg.showModal();
+}
+actDlg.addEventListener('click', e => { if (e.target === actDlg || e.target.closest('[data-close]')) actDlg.close(); });
+
+function itemMenu(id){
+  const f = findItem(id); if (!f) return;
+  actionSheet(f.item.text || 'بند من غير اسم', [
+    { label: 'إضافة بند فرعي (١.١ ، ١.٢ …)', fn: () => {
+      const k = newItem(); f.item.children = f.item.children || []; f.item.children.push(k); f.item.closed = false;
+      commit('lists', { render: false }); renderLists(`[data-id="${k.id}"] > .row .txt`);
+    } },
+    { label: 'طلّعه لفوق', disabled: f.idx === 0, fn: () => { [f.arr[f.idx - 1], f.arr[f.idx]] = [f.arr[f.idx], f.arr[f.idx - 1]]; commit('lists'); } },
+    { label: 'نزّله لتحت', disabled: f.idx === f.arr.length - 1, fn: () => { [f.arr[f.idx + 1], f.arr[f.idx]] = [f.arr[f.idx], f.arr[f.idx + 1]]; commit('lists'); } },
+    { label: 'احذف البند', danger: true, fn: () => withUndo('lists', 'اتحذف البند', () => { const g = findItem(id); g.arr.splice(g.idx, 1); }) }
+  ]);
+}
+function listMenu(id){
+  const l = findList(id); if (!l) return;
+  const i = lists().indexOf(l);
+  const walk = (items, fn) => items.forEach(it => { fn(it); if (it.children) walk(it.children, fn); });
+  actionSheet(l.title || 'قائمة من غير اسم', [
+    { label: 'غيّر الاسم', fn: () => { l.open = true; renderLists(`[data-list="${id}"] .list-title`); } },
+    { label: 'امسح كل العلامات', fn: () => withUndo('lists', 'اتمسحت العلامات', () => walk(l.items, it => it.status = { t: 'none' })) },
+    { label: 'اعمل نسخة منها', fn: () => {
+      const c = clone(l); c.id = gid(); c.title = (l.title || 'قائمة') + ' (نسخة)';
+      walk(c.items, it => it.id = gid());
+      lists().splice(i + 1, 0, c); commit('lists');
+    } },
+    { label: 'طلّعها لفوق', disabled: i === 0, fn: () => { const a = lists(); [a[i - 1], a[i]] = [a[i], a[i - 1]]; commit('lists'); } },
+    { label: 'نزّلها لتحت', disabled: i === lists().length - 1, fn: () => { const a = lists(); [a[i + 1], a[i]] = [a[i], a[i + 1]]; commit('lists'); } },
+    { label: 'احذف القائمة', danger: true, fn: () => withUndo('lists', 'اتحذفت القائمة', () => { const a = lists(); a.splice(a.indexOf(l), 1); }) }
+  ]);
+}
+
+/* ---------- reminders ---------- */
+const rems = () => S.reminders.v;
+const BEFORE = [[0, 'في نفس الميعاد'], [5, 'قبلها بـ ٥ دقايق'], [10, 'قبلها بـ ١٠ دقايق'], [15, 'قبلها بربع ساعة'], [30, 'قبلها بنص ساعة'], [60, 'قبلها بساعة'], [1440, 'قبلها بيوم']];
+const REPEAT = [['none', 'مرة واحدة'], ['daily', 'كل يوم'], ['weekly', 'كل أسبوع']];
+BEFORE.forEach(([v, t]) => $('#r-before').add(new Option(t, v)));
+REPEAT.forEach(([v, t]) => $('#r-repeat').add(new Option(t, v)));
+$('#r-before').value = '10';
+
+const pad2 = x => String(x).padStart(2, '0');
+const toLocalInput = d => `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}T${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+function defaultAt(){ const d = new Date(Date.now() + 3600e3); d.setMinutes(Math.ceil(d.getMinutes() / 5) * 5, 0, 0); return toLocalInput(d); }
+$('#r-at').value = defaultAt();
+
+const fmtTime = new Intl.DateTimeFormat(AR, { hour: 'numeric', minute: '2-digit' });
+const fmtDay = new Intl.DateTimeFormat(AR, { weekday: 'long', day: 'numeric', month: 'long' });
+const rtf = new Intl.RelativeTimeFormat(AR, { numeric: 'auto' });
+function dayLabel(d){
+  const a = new Date(); a.setHours(0, 0, 0, 0);
+  const b = new Date(d); b.setHours(0, 0, 0, 0);
+  const diff = Math.round((b - a) / 864e5);
+  if (diff === 0) return 'النهارده';
+  if (diff === 1) return 'بكرة';
+  if (diff === -1) return 'امبارح';
+  return fmtDay.format(d);
+}
+function relTime(ms){
+  const m = Math.round(ms / 60000), am = Math.abs(m);
+  if (am < 60) return rtf.format(m, 'minute');
+  const h = Math.round(m / 60);
+  if (Math.abs(h) < 48) return rtf.format(h, 'hour');
+  return rtf.format(Math.round(h / 24), 'day');
+}
+function gcalLink(r){
+  const s = new Date(r.at), e = new Date(s.getTime() + 30 * 60000);
+  const f = d => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+  const u = new URL('https://calendar.google.com/calendar/render');
+  u.searchParams.set('action', 'TEMPLATE');
+  u.searchParams.set('text', r.title);
+  u.searchParams.set('dates', f(s) + '/' + f(e));
+  if (r.note) u.searchParams.set('details', r.note);
+  if (r.repeat === 'daily') u.searchParams.set('recur', 'RRULE:FREQ=DAILY');
+  if (r.repeat === 'weekly') u.searchParams.set('recur', 'RRULE:FREQ=WEEKLY');
+  return u.toString();
+}
+
+let editingId = null;
+function resetForm(){
+  editingId = null;
+  $('#r-title').value = ''; $('#r-note').value = ''; $('#r-at').value = defaultAt();
+  $('#r-before').value = '10'; $('#r-repeat').value = 'none';
+  $('#r-save').textContent = 'حفظ التذكير'; $('#r-cancel').hidden = true; $('#r-err').hidden = true;
+}
+function showErr(msg){ const e = $('#r-err'); e.textContent = msg; e.hidden = false; }
+$('#r-save').addEventListener('click', () => {
+  unlockAudio();
+  const title = $('#r-title').value.trim(), at = $('#r-at').value;
+  if (!title) { showErr('اكتب اسم الميعاد.'); $('#r-title').focus(); return; }
+  if (!at || isNaN(new Date(at))) { showErr('اختار التاريخ والساعة.'); $('#r-at').focus(); return; }
+  const repeat = $('#r-repeat').value;
+  if (repeat === 'none' && new Date(at).getTime() < Date.now() - 60000) { showErr('الوقت ده فات. اختار وقت جاي.'); $('#r-at').focus(); return; }
+  const data = { title, at, before: +$('#r-before').value, repeat, note: $('#r-note').value.trim() };
+  if (editingId) {
+    const r = rems().find(x => x.id === editingId);
+    if (r) { if (r.at !== at || r.before !== data.before) r.firedFor = null; Object.assign(r, data); r.done = false; }
+    toast('اتحفظ التعديل');
+  } else {
+    rems().push({ id: gid(), ...data, done: false, firedFor: null });
+    toast('اتحفظ التذكير');
+  }
+  commit('reminders');
+  resetForm();
+});
+$('#r-cancel').addEventListener('click', resetForm);
+$('#r-title').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing) $('#r-save').click(); });
+
+function remHTML(r, now){
+  const d = new Date(r.at), T = d.getTime();
+  const past = r.done || (T < now && r.repeat === 'none');
+  const soon = !past && T - now < 3600e3 && T >= now;
+  const rep = r.repeat !== 'none' ? `<span class="badge">${r.repeat === 'daily' ? 'كل يوم' : 'كل أسبوع'}</span>` : '';
+  const beforeTxt = (BEFORE.find(b => b[0] === r.before) || BEFORE[0])[1];
+  return `<div class="rem${past ? ' past' : ''}${soon ? ' soon' : ''}" data-rid="${r.id}">
+    <div class="rem-when"><b>${fmtTime.format(d)}</b><span>${dayLabel(d)}</span></div>
+    <div class="rem-body">
+      <div class="rem-title">${esc(r.title)}${rep}</div>
+      <div class="rem-meta">${r.done ? 'خلص' : relTime(T - now)}، والتنبيه ${beforeTxt}</div>
+      ${r.note ? `<div class="rem-note">${esc(r.note)}</div>` : ''}
+      <div class="rem-actions">
+        <button class="link" data-ract="done">${r.done ? 'رجّعه' : 'خلص'}</button>
+        <button class="link" data-ract="edit">تعديل</button>
+        ${past ? '' : `<a class="link" href="${esc(gcalLink(r))}" target="_blank" rel="noopener">أضف لتقويم جوجل</a>`}
+        <button class="link danger" data-ract="del">حذف</button>
+      </div>
+    </div>
+  </div>`;
+}
+function renderReminders(){
+  const now = Date.now();
+  const all = [...rems()].sort((a, b) => new Date(a.at) - new Date(b.at));
+  const isPast = r => r.done || (new Date(r.at).getTime() < now && r.repeat === 'none');
+  const up = all.filter(r => !isPast(r)), past = all.filter(isPast).reverse();
+  let h = `<div class="group-title">الجاية</div>`;
+  h += up.length ? `<div class="rems">${up.map(r => remHTML(r, now)).join('')}</div>`
+                 : `<div class="empty"><b>مفيش مواعيد جاية</b>اكتب أول ميعاد في الخانة اللي فوق.</div>`;
+  if (past.length) h += `<div class="group-title">اللي فات أو خلص</div><div class="rems">${past.map(r => remHTML(r, now)).join('')}</div>`;
+  $('#rem-list').innerHTML = h;
+}
+$('#rem-list').addEventListener('click', e => {
+  const b = e.target.closest('[data-ract]'); if (!b) return;
+  const id = b.closest('[data-rid]').dataset.rid;
+  const r = rems().find(x => x.id === id); if (!r) return;
+  const act = b.dataset.ract;
+  if (act === 'done') { r.done = !r.done; commit('reminders'); }
+  else if (act === 'del') withUndo('reminders', 'اتحذف الميعاد', () => { const a = rems(); a.splice(a.indexOf(r), 1); });
+  else if (act === 'edit') {
+    editingId = id;
+    $('#r-title').value = r.title; $('#r-at').value = r.at; $('#r-before').value = String(r.before);
+    $('#r-repeat').value = r.repeat; $('#r-note').value = r.note || '';
+    $('#r-save').textContent = 'حفظ التعديل'; $('#r-cancel').hidden = false; $('#r-err').hidden = true;
+    window.scrollTo({ top: 0, behavior: 'smooth' }); $('#r-title').focus({ preventScroll: true });
+  }
+});
+
+/* notifications + sound */
+let audioCtx = null;
+function unlockAudio(){
+  try { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); if (audioCtx.state === 'suspended') audioCtx.resume(); } catch (e) {}
+}
+document.addEventListener('pointerdown', unlockAudio, { once: true });
+function beep(){
+  if (!audioCtx) return;
+  try {
+    const t0 = audioCtx.currentTime;
+    [0, .32, .64].forEach((dt, i) => {
+      const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+      o.type = 'sine'; o.frequency.value = i === 2 ? 1046 : 880;
+      g.gain.setValueAtTime(0.0001, t0 + dt);
+      g.gain.exponentialRampToValueAtTime(0.25, t0 + dt + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + dt + 0.26);
+      o.connect(g).connect(audioCtx.destination); o.start(t0 + dt); o.stop(t0 + dt + 0.28);
+    });
+  } catch (e) {}
+}
+const canNotify = () => { try { return 'Notification' in window; } catch (e) { return false; } };
+function renderNotifyRow(){
+  const row = $('#notify-row');
+  const base = 'التنبيه بيرن بصوت طول ما الصفحة مفتوحة، حتى لو في تاب تاني. عشان يرن على التليفون وهو مقفول، اضغط «أضف لتقويم جوجل» جنب الميعاد.';
+  row.textContent = base;
+  if (!canNotify()) return;
+  if (Notification.permission === 'default') {
+    const b = document.createElement('button'); b.className = 'ghost'; b.textContent = 'فعّل إشعارات المتصفح';
+    b.onclick = async () => {
+      unlockAudio();
+      try { await Notification.requestPermission(); } catch (e) {}
+      if (Notification.permission !== 'granted') toast('الإشعارات مش متاحة هنا؛ التنبيه هيظهر جوه الصفحة بصوت.');
+      renderNotifyRow();
+    };
+    row.append(b);
+  }
+}
+function fireAlarm(r, T){
+  const d = new Date(T);
+  const when = T > Date.now() + 30000 ? 'الساعة ' + fmtTime.format(d) + ' (' + relTime(T - Date.now()) + ')' : 'دلوقتي، الساعة ' + fmtTime.format(d);
+  const el = document.createElement('div'); el.className = 'alarm'; el.setAttribute('role', 'alert');
+  el.innerHTML = `<span class="bell">${ICON.bell}</span><div><b></b><span></span></div><button class="primary">تمام</button>`;
+  el.querySelector('b').textContent = r.title;
+  el.querySelector('div span').textContent = when + (r.note ? ' — ' + r.note : '');
+  el.querySelector('button').onclick = () => el.remove();
+  $('#alarms').append(el);
+  beep();
+  try { navigator.vibrate && navigator.vibrate([300, 150, 300]); } catch (e) {}
+  try { if (canNotify() && Notification.permission === 'granted') new Notification('⏰ ' + r.title, { body: when, tag: r.id + r.at }); } catch (e) {}
+}
+function advance(r){
+  const step = r.repeat === 'daily' ? 1 : 7;
+  const d = new Date(r.at), now = Date.now();
+  while (d.getTime() <= now) d.setDate(d.getDate() + step);
+  r.at = toLocalInput(d);
+}
+let lastMinute = -1;
+function tick(){
+  const now = Date.now(); let changed = false;
+  try { prayerTick(now); } catch (e) {}
+  for (const r of rems()) {
+    if (r.done) continue;
+    const T = new Date(r.at).getTime(); if (isNaN(T)) continue;
+    const A = T - (r.before || 0) * 60000;
+    if (now >= A && r.firedFor !== r.at) {
+      r.firedFor = r.at; changed = true;
+      if (now - T < 6 * 3600e3) fireAlarm(r, T);
+    }
+    if (r.repeat !== 'none' && now >= T + 60000) { advance(r); changed = true; }
+  }
+  if (changed) commit('reminders');
+  else {
+    const m = Math.floor(now / 60000);
+    if (m !== lastMinute) { lastMinute = m; if (currentView === 'reminders' && !document.activeElement?.closest?.('#rem-list')) renderReminders(); }
+  }
+}
+
+/* ---------- calendar + projects ---------- */
+ICON.flag = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg>';
+const IMP = { 1: ['مهم جدًا', 'أسود'], 2: ['مهم', 'أحمر'], 3: ['عادي', 'أبيض'] };
+const plan = () => {
+  const v = S.plan.v || (S.plan.v = {});
+  v.events = v.events || []; v.projects = v.projects || [];
+  v.projects.forEach(p => { p.lists = p.lists || []; p.miles = p.miles || []; });
+  return v;
+};
+const ymd = d => `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+const todayStr = () => ymd(new Date());
+const dateOf = s => new Date(s + 'T12:00:00');
+function daysFrom(s){ const a = new Date(); a.setHours(12, 0, 0, 0); return Math.round((dateOf(s) - a) / 864e5); }
+function whenText(s, done){
+  if (done) return 'خلصت';
+  const d = daysFrom(s);
+  if (d === 0) return 'النهارده';
+  if (d === 1) return 'بكرة';
+  if (d === 2) return 'بعد يومين';
+  if (d > 2 && d <= 10) return 'بعد ' + n(d) + ' أيام';
+  if (d > 10) return 'بعد ' + n(d) + ' يوم';
+  if (d === -1) return 'فات من امبارح';
+  return 'فات من ' + n(-d) + ' يوم';
+}
+const impTag = i => `<span class="imp-tag i${i}">${IMP[i][0]}</span>`;
+const evDone = e => !!e.done || (!!(e.items || []).length && e.items.every(i => i.done));
+const findEv = id => plan().events.find(e => e.id === id);
+const findProj = id => plan().projects.find(p => p.id === id);
+
+let calY = new Date().getFullYear(), calM = new Date().getMonth(), selDate = todayStr();
+const MONTH = new Intl.DateTimeFormat(AR, { month: 'long', year: 'numeric' });
+
+function entriesFor(ds){
+  const out = [];
+  plan().events.forEach(e => { if (e.date === ds) out.push({ k: 'ev', imp: e.imp || 3, e }); });
+  plan().projects.forEach(p => p.miles.forEach(m => { if (m.date === ds) out.push({ k: 'ms', imp: p.imp || 3, p, m }); }));
+  return out.sort((a, b) => a.imp - b.imp);
+}
+function renderPlan(){
+  if (currentView === 'calendar') renderCalendar();
+  else if (currentView === 'projects') renderProjects();
+}
+
+/* ----- calendar ----- */
+function renderCalendar(){
+  const first = new Date(calY, calM, 1);
+  $('#cal-title').textContent = MONTH.format(first);
+  const off = (first.getDay() + 1) % 7, dim = new Date(calY, calM + 1, 0).getDate();
+  const pre = calY + '-' + pad2(calM + 1) + '-';
+  const info = {};
+  const note = (ds, imp, done) => { const x = info[ds] || (info[ds] = { imp: 9, c: 0, d: 0 }); x.imp = Math.min(x.imp, imp); x.c++; if (done) x.d++; };
+  plan().events.forEach(e => { if (e.date && e.date.startsWith(pre)) note(e.date, e.imp || 3, evDone(e)); });
+  plan().projects.forEach(p => p.miles.forEach(m => { if (m.date && m.date.startsWith(pre)) note(m.date, p.imp || 3, !!m.done); }));
+  let h = '';
+  for (let i = 0; i < off; i++) h += '<span class="day blank"></span>';
+  const t = todayStr();
+  for (let d = 1; d <= dim; d++) {
+    const ds = pre + pad2(d), x = info[ds];
+    const cls = ['day'];
+    if (x) cls.push('i' + x.imp);
+    if (x && x.d === x.c) cls.push('fin');
+    if (ds === t) cls.push('today');
+    if (ds === selDate) cls.push('sel');
+    const label = fmtDay.format(dateOf(ds)) + (x ? '، ' + n(x.c) + ' عنصر' : '');
+    h += `<button class="${cls.join(' ')}" data-date="${ds}" aria-label="${label}" aria-pressed="${ds === selDate}"><span>${n(d)}</span>${x && x.c > 1 ? `<small>${n(x.c)}</small>` : ''}</button>`;
+  }
+  $('#cal-grid').innerHTML = h;
+  renderDay();
+}
+function entryHTML(x){
+  if (x.k === 'ms') {
+    const { p, m } = x;
+    return `<div class="ent i${x.imp}${m.done ? ' is-done' : ''}" data-pid="${p.id}" data-mid="${m.id}">
+      <div class="ent-head">
+        <button class="ck${m.done ? ' on' : ''}" data-dact="ms-ck" aria-pressed="${!!m.done}" aria-label="تمت المحطة">${ICON.check}</button>
+        <div class="ent-main"><b>${esc(m.title || 'محطة')}</b><span class="ent-sub">${ICON.flag} محطة في مشروع «${esc(p.title || 'من غير اسم')}»</span></div>
+        ${impTag(x.imp)}
+      </div>
+      <div class="rem-actions"><button class="link" data-dact="open-proj">افتح المشروع</button></div>
+    </div>`;
+  }
+  const e = x.e, items = e.items || [], done = evDone(e);
+  return `<div class="ent i${x.imp}${done ? ' is-done' : ''}" data-eid="${e.id}">
+    <div class="ent-head"><div class="ent-main"><b>${esc(e.title || 'من غير اسم')}</b></div>${impTag(x.imp)}</div>
+    ${e.note ? `<div class="rem-note">${esc(e.note)}</div>` : ''}
+    ${items.length ? `<ul class="sched">${items.map(i => `<li data-iid="${i.id}" class="${i.done ? 'is-done' : ''}"><button class="ck${i.done ? ' on' : ''}" data-dact="ev-ck" aria-pressed="${!!i.done}" aria-label="تم">${ICON.check}</button>${i.time ? `<time>${fmtTime.format(new Date('2000-01-01T' + i.time))}</time>` : ''}<span>${esc(i.text)}</span></li>`).join('')}</ul>` : ''}
+    <div class="rem-actions">
+      <button class="link" data-dact="ev-done">${done ? 'رجّعه' : 'خلّصه'}</button>
+      <button class="link" data-dact="ev-edit">تعديل</button>
+      <button class="link danger" data-dact="ev-del">حذف</button>
+    </div>
+  </div>`;
+}
+function renderDay(){
+  const d = dateOf(selDate), es = entriesFor(selDate), full = fmtDay.format(d), rel = dayLabel(d);
+  $('#day-title').textContent = full;
+  $('#day-sub').textContent = rel === full ? '' : rel;
+  $('#day-list').innerHTML = es.length ? es.map(entryHTML).join('') : '<div class="empty"><b>اليوم فاضي</b>ضيف جدول أو ميعاد لليوم ده.</div>';
+}
+function gotoDate(ds){ selDate = ds; const dt = dateOf(ds); calY = dt.getFullYear(); calM = dt.getMonth(); }
+$('#cal-prev').addEventListener('click', () => { calM--; if (calM < 0) { calM = 11; calY--; } renderCalendar(); });
+$('#cal-next').addEventListener('click', () => { calM++; if (calM > 11) { calM = 0; calY++; } renderCalendar(); });
+$('#cal-title').addEventListener('click', () => gotoDate(todayStr()) || renderCalendar());
+$('#cal-grid').addEventListener('click', e => {
+  const b = e.target.closest('[data-date]'); if (!b) return;
+  selDate = b.dataset.date; renderCalendar();
+  try { $('#day-panel').scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch (err) {}
+});
+$('#day-add').addEventListener('click', () => openEv(null));
+$('#day-list').addEventListener('click', e => {
+  const b = e.target.closest('[data-dact]'); if (!b) return;
+  const act = b.dataset.dact;
+  if (act === 'ms-ck' || act === 'open-proj') {
+    const box = b.closest('[data-mid]'), p = findProj(box.dataset.pid); if (!p) return;
+    if (act === 'open-proj') return openProject(p.id);
+    const m = p.miles.find(x => x.id === box.dataset.mid); if (m) { m.done = !m.done; commit('plan'); }
+    return;
+  }
+  const box = b.closest('[data-eid]'), ev = box && findEv(box.dataset.eid); if (!ev) return;
+  if (act === 'ev-ck') { const it = (ev.items || []).find(i => i.id === b.closest('[data-iid]').dataset.iid); if (it) { it.done = !it.done; commit('plan'); } }
+  else if (act === 'ev-done') { const to = !evDone(ev); ev.done = to; (ev.items || []).forEach(i => i.done = to); commit('plan'); }
+  else if (act === 'ev-edit') openEv(ev.id);
+  else if (act === 'ev-del') withUndo('plan', 'اتحذف الجدول', () => { const a = plan().events; a.splice(a.findIndex(x => x.id === ev.id), 1); });
+});
+
+/* ----- calendar entry editor ----- */
+const evDlg = $('#ev-dlg');
+let evId = null, evImp = 2, evRows = [];
+function paintImp(){ $$('#ev-imp [data-imp]').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.imp === evImp))); }
+function paintRows(){
+  $('#ev-items').innerHTML = evRows.map((r, i) => `<div class="ev-row" data-r="${i}"><input type="time" data-rf="time" value="${esc(r.time || '')}" aria-label="الساعة"><input data-rf="text" value="${esc(r.text || '')}" placeholder="بند في الجدول…" aria-label="البند" enterkeyhint="next"><button type="button" class="more" data-rdel aria-label="شيل البند">${ICON.x}</button></div>`).join('');
+}
+function openEv(id){
+  const e = id ? findEv(id) : null;
+  evId = e ? e.id : null; evImp = e ? (e.imp || 3) : 2;
+  $('#ev-head').textContent = e ? 'تعديل' : 'جدول أو ميعاد جديد';
+  $('#ev-title').value = e ? e.title : '';
+  $('#ev-date').value = e ? e.date : selDate;
+  $('#ev-note').value = e ? (e.note || '') : '';
+  evRows = e ? clone(e.items || []) : [];
+  $('#ev-del').hidden = !e; $('#ev-err').hidden = true;
+  paintImp(); paintRows(); evDlg.showModal();
+}
+function evErr(msg){ const el = $('#ev-err'); el.textContent = msg; el.hidden = false; }
+$('#ev-imp').addEventListener('click', e => { const b = e.target.closest('[data-imp]'); if (!b) return; evImp = +b.dataset.imp; paintImp(); });
+$('#ev-items').addEventListener('input', e => {
+  const r = e.target.closest('[data-r]'), f = e.target.dataset.rf; if (!r || !f) return;
+  evRows[+r.dataset.r][f] = e.target.value;
+});
+$('#ev-items').addEventListener('click', e => {
+  if (!e.target.closest('[data-rdel]')) return;
+  evRows.splice(+e.target.closest('[data-r]').dataset.r, 1); paintRows();
+});
+function addEvRow(){
+  evRows.push({ id: gid(), time: '', text: '', done: false }); paintRows();
+  const t = $$('#ev-items [data-rf="text"]').pop(); if (t) t.focus();
+}
+$('#ev-add-item').addEventListener('click', addEvRow);
+$('#ev-items').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing && e.target.dataset.rf === 'text') { e.preventDefault(); addEvRow(); } });
+$('#ev-cancel').addEventListener('click', () => evDlg.close());
+evDlg.addEventListener('click', e => { if (e.target === evDlg) evDlg.close(); });
+$('#ev-del').addEventListener('click', () => {
+  const id = evId; evDlg.close();
+  withUndo('plan', 'اتحذف الجدول', () => { const a = plan().events; const i = a.findIndex(x => x.id === id); if (i >= 0) a.splice(i, 1); });
+});
+$('#ev-save').addEventListener('click', () => {
+  const title = $('#ev-title').value.trim(), date = $('#ev-date').value;
+  if (!title) { evErr('اكتب اسم الجدول أو الميعاد.'); $('#ev-title').focus(); return; }
+  if (!date) { evErr('اختار اليوم.'); return; }
+  const items = evRows.filter(r => (r.text || '').trim() || r.time)
+    .map(r => ({ id: r.id || gid(), time: r.time || '', text: (r.text || '').trim(), done: !!r.done }))
+    .sort((a, b) => (a.time || '99:99').localeCompare(b.time || '99:99'));
+  const data = { title, date, imp: evImp, note: $('#ev-note').value.trim(), items };
+  const cur = evId && findEv(evId);
+  if (cur) Object.assign(cur, data); else plan().events.push({ id: gid(), ...data, done: false });
+  gotoDate(date);
+  commit('plan');
+  evDlg.close();
+  toast(cur ? 'اتحفظ التعديل' : 'اتضاف في التقويم');
+});
+
+/* ----- projects ----- */
+function projStats(p){
+  const items = p.lists.flatMap(l => l.items);
+  const total = items.length + p.miles.length;
+  const done = items.filter(i => i.done).length + p.miles.filter(m => m.done).length;
+  return { total, done, pct: total ? Math.round(done / total * 100) : 0 };
+}
+function mileHTML(m){
+  const late = !m.done && m.date && daysFrom(m.date) < 0;
+  return `<div class="mile${m.done ? ' is-done' : ''}${late ? ' late' : ''}" data-m="${m.id}">
+    <button class="ck${m.done ? ' on' : ''}" data-pact="ms-ck" aria-pressed="${!!m.done}" aria-label="تمت المحطة">${ICON.check}</button>
+    <div class="mile-main"><input class="txt" data-f="m-title" value="${esc(m.title)}" placeholder="المحطة…" aria-label="المحطة"><span class="mile-when">${m.date ? esc(whenText(m.date, m.done)) : ''}</span></div>
+    <input type="date" class="mile-date" data-f="m-date" value="${esc(m.date || '')}" aria-label="تاريخ المحطة">
+    <button class="more" data-pact="ms-del" aria-label="احذف المحطة">${ICON.x}</button>
+  </div>`;
+}
+function plistHTML(l){
+  const done = l.items.filter(i => i.done).length;
+  return `<div class="plist" data-l="${l.id}">
+    <div class="plist-head"><input class="plist-title" data-f="l-title" value="${esc(l.title)}" placeholder="اسم الجدول" aria-label="اسم الجدول"><span class="chip">${l.items.length ? n(done) + ' من ' + n(l.items.length) : 'فاضي'}</span><button class="more" data-pact="del-list" aria-label="احذف الجدول">${ICON.x}</button></div>
+    <ul class="pitems">${l.items.map(i => `<li data-i="${i.id}" class="${i.done ? 'is-done' : ''}"><button class="ck${i.done ? ' on' : ''}" data-pact="ck" aria-pressed="${!!i.done}" aria-label="تم">${ICON.check}</button><input class="txt" data-f="i-text" value="${esc(i.text)}" placeholder="اكتب البند…" aria-label="البند"><button class="more" data-pact="del-item" aria-label="احذف البند">${ICON.x}</button></li>`).join('')}</ul>
+    <div class="add-row"><input class="new-input" data-f="new-item" placeholder="بند جديد…" aria-label="بند جديد" enterkeyhint="done"><button data-pact="add-item">${ICON.plus}إضافة</button></div>
+  </div>`;
+}
+function projBody(p){
+  const miles = p.miles.slice().sort((a, b) => (a.date || '9').localeCompare(b.date || '9'));
+  return `<div class="proj-body">
+    <div class="imp-row"><span class="lbl">الأهمية (لون المشروع في التقويم)</span><div class="imp-choices">${[1, 2, 3].map(i => `<button type="button" class="impb" data-pact="imp" data-v="${i}" aria-pressed="${(p.imp || 3) === i}"><i class="sw i${i}"></i>${IMP[i][0]}</button>`).join('')}</div></div>
+    <label class="lbl" for="pn-${p.id}">عن المشروع</label>
+    <textarea id="pn-${p.id}" class="pnotes" data-f="p-notes" placeholder="اكتب عن المشروع: فكرته، هدفك منه، أي حاجة في دماغك…">${esc(p.notes || '')}</textarea>
+    <h3 class="sec">الجداول</h3>
+    ${p.lists.map(plistHTML).join('')}
+    <button class="ghost sm" data-pact="new-list">${ICON.plus}جدول جديد</button>
+    <h3 class="sec">المحطات والتواريخ</h3>
+    <p class="hint2">اكتب هتكون وصلت لإيه وفي أنهي يوم، وهتظهر في التقويم.</p>
+    ${miles.map(mileHTML).join('')}
+    <div class="add-row ms-add"><input class="ms-new-title" data-f="ms-new-title" placeholder="مثلاً: أخلّص النسخة الأولى" aria-label="المحطة" enterkeyhint="next"><input class="ms-new-date" type="date" aria-label="تاريخ المحطة"><button data-pact="ms-add">${ICON.plus}إضافة</button></div>
+  </div>`;
+}
+function projHTML(p){
+  const st = projStats(p), open = p.open !== false, imp = p.imp || 3;
+  const up = p.miles.filter(m => !m.done && m.date).sort((a, b) => a.date.localeCompare(b.date))[0];
+  const chip = st.total ? `<b>${n(st.pct)}٪</b>` + (up ? `<span class="sep"></span>${esc(whenText(up.date))}` : '') : 'جديد';
+  return `<section class="proj" data-p="${p.id}">
+    <div class="list-head">
+      <button class="chev" data-pact="toggle" aria-expanded="${open}" aria-label="${open ? 'اطوي' : 'افتح'} المشروع">${ICON.chev}</button>
+      <i class="dot i${imp}" title="${IMP[imp][0]}"></i>
+      <input class="list-title" data-f="p-title" value="${esc(p.title)}" placeholder="اسم المشروع" aria-label="اسم المشروع">
+      <span class="chip">${chip}</span>
+      <button class="more" data-pact="proj-menu" aria-label="خيارات المشروع">${ICON.dots}</button>
+      <div class="bar" aria-hidden="true"><i style="width:${st.pct}%"></i></div>
+    </div>
+    ${open ? projBody(p) : ''}
+  </section>`;
+}
+const projEl = $('#projects');
+function renderProjects(focusSel){
+  const ps = plan().projects;
+  projEl.innerHTML = ps.length ? ps.map(projHTML).join('') : `<div class="empty"><b>مفيش مشاريع لسه</b>اكتب أول مشروع، واعمله جداول ومحطات بتواريخ.<br><button class="primary" data-pact="new-proj">${ICON.plus}مشروع جديد</button></div>`;
+  if (focusSel) { const el = $(focusSel); if (el) { el.focus(); if (el.setSelectionRange) { try { const v = el.value.length; el.setSelectionRange(v, v); } catch (err) {} } } }
+}
+function addProject(){
+  const p = { id: gid(), title: '', imp: 2, open: true, notes: '', lists: [], miles: [] };
+  plan().projects.unshift(p);
+  commit('plan', { render: false });
+  renderProjects(`[data-p="${p.id}"] .list-title`);
+}
+$('#new-proj').addEventListener('click', addProject);
+function openProject(id){
+  const p = findProj(id); if (!p) return;
+  p.open = true; commit('plan', { render: false });
+  setView('projects');
+  setTimeout(() => { const el = $(`[data-p="${id}"]`); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
+}
+function projMenu(p){
+  const ds = p.miles.filter(m => m.date).map(m => m.date).sort();
+  actionSheet(p.title || 'مشروع من غير اسم', [
+    { label: 'اعرض محطاتي في التقويم', disabled: !ds.length, fn: () => { gotoDate(ds.find(d => d >= todayStr()) || ds[0]); setView('calendar'); } },
+    { label: 'احذف المشروع', danger: true, fn: () => withUndo('plan', 'اتحذف المشروع', () => { const a = plan().projects; a.splice(a.findIndex(x => x.id === p.id), 1); }) }
+  ]);
+}
+function pctx(el){
+  const ps = el.closest('[data-p]'), p = ps && findProj(ps.dataset.p);
+  const ls = el.closest('[data-l]');
+  return { p, l: p && ls ? p.lists.find(x => x.id === ls.dataset.l) : null };
+}
+function addPItem(p, l, text){
+  text = (text || '').trim(); if (!text) return;
+  l.items.push({ id: gid(), text, done: false });
+  commit('plan', { render: false });
+  renderProjects(`[data-p="${p.id}"] [data-l="${l.id}"] .new-input`);
+}
+function addMile(p, sec){
+  const t = $('.ms-new-title', sec), d = $('.ms-new-date', sec);
+  if (!t.value.trim() || !d.value) { toast('اكتب المحطة واختار تاريخها.'); (t.value.trim() ? d : t).focus(); return; }
+  p.miles.push({ id: gid(), title: t.value.trim(), date: d.value, done: false });
+  commit('plan', { render: false });
+  renderProjects(`[data-p="${p.id}"] .ms-new-title`);
+  toast('اتضافت المحطة، وهتلاقيها في التقويم يوم ' + fmtDay.format(dateOf(d.value)));
+}
+projEl.addEventListener('click', e => {
+  const b = e.target.closest('[data-pact]'); if (!b) return;
+  const act = b.dataset.pact;
+  if (act === 'new-proj') return addProject();
+  const { p, l } = pctx(b); if (!p) return;
+  if (act === 'toggle') { p.open = p.open === false; commit('plan'); }
+  else if (act === 'imp') { p.imp = +b.dataset.v; commit('plan'); }
+  else if (act === 'proj-menu') projMenu(p);
+  else if (act === 'new-list') {
+    const nl = { id: gid(), title: '', items: [] }; p.lists.push(nl);
+    commit('plan', { render: false }); renderProjects(`[data-l="${nl.id}"] .plist-title`);
+  }
+  else if (act === 'del-list' && l) withUndo('plan', 'اتحذف الجدول', () => { p.lists.splice(p.lists.indexOf(l), 1); });
+  else if (act === 'add-item' && l) addPItem(p, l, $('.new-input', b.closest('[data-l]')).value);
+  else if (act === 'ck' && l) { const it = l.items.find(i => i.id === b.closest('[data-i]').dataset.i); if (it) { it.done = !it.done; commit('plan'); } }
+  else if (act === 'del-item' && l) { const id = b.closest('[data-i]').dataset.i; withUndo('plan', 'اتحذف البند', () => { const i = l.items.findIndex(x => x.id === id); if (i >= 0) l.items.splice(i, 1); }); }
+  else if (act === 'ms-ck') { const m = p.miles.find(x => x.id === b.closest('[data-m]').dataset.m); if (m) { m.done = !m.done; commit('plan'); } }
+  else if (act === 'ms-del') { const id = b.closest('[data-m]').dataset.m; withUndo('plan', 'اتحذفت المحطة', () => { const i = p.miles.findIndex(x => x.id === id); if (i >= 0) p.miles.splice(i, 1); }); }
+  else if (act === 'ms-add') addMile(p, b.closest('.ms-add'));
+});
+projEl.addEventListener('input', e => {
+  const t = e.target, f = t.dataset.f; if (!f) return;
+  const { p, l } = pctx(t); if (!p) return;
+  if (f === 'p-title') p.title = t.value;
+  else if (f === 'p-notes') p.notes = t.value;
+  else if (f === 'l-title' && l) l.title = t.value;
+  else if (f === 'i-text' && l) { const it = l.items.find(i => i.id === t.closest('[data-i]').dataset.i); if (it) it.text = t.value; }
+  else if (f === 'm-title') { const m = p.miles.find(x => x.id === t.closest('[data-m]').dataset.m); if (m) m.title = t.value; }
+  else return;
+  commit('plan', { render: false });
+});
+projEl.addEventListener('change', e => {
+  const t = e.target; if (t.dataset.f !== 'm-date') return;
+  const { p } = pctx(t); if (!p) return;
+  const m = p.miles.find(x => x.id === t.closest('[data-m]').dataset.m);
+  if (m) { m.date = t.value; commit('plan'); }
+});
+projEl.addEventListener('keydown', e => {
+  if (e.key !== 'Enter' || e.isComposing) return;
+  const t = e.target, f = t.dataset.f; if (!f) return;
+  const { p, l } = pctx(t); if (!p) return;
+  if (f === 'new-item' && l) { e.preventDefault(); addPItem(p, l, t.value); }
+  else if (f === 'ms-new-title') { e.preventDefault(); addMile(p, t.closest('.ms-add')); }
+  else if (f === 'p-title' || f === 'l-title') { e.preventDefault(); t.blur(); }
+});
+
+/* ---------- prayer times (calculated offline) ---------- */
+const PR_CITIES = [
+  ['cairo', 'القاهرة', 30.0444, 31.2357], ['giza', 'الجيزة', 30.0131, 31.2089], ['alex', 'الإسكندرية', 31.2001, 29.9187],
+  ['mansoura', 'المنصورة', 31.0409, 31.3785], ['tanta', 'طنطا', 30.7865, 31.0004], ['ismailia', 'الإسماعيلية', 30.5965, 32.2715],
+  ['portsaid', 'بورسعيد', 31.2653, 32.3019], ['suez', 'السويس', 29.9668, 32.5498], ['fayoum', 'الفيوم', 29.3084, 30.8428],
+  ['assiut', 'أسيوط', 27.1783, 31.1859], ['luxor', 'الأقصر', 25.6872, 32.6396], ['aswan', 'أسوان', 24.0889, 32.8998],
+  ['hurghada', 'الغردقة', 27.2579, 33.8116], ['sharm', 'شرم الشيخ', 27.9158, 34.33]
+];
+const PR_NAMES = [['fajr', 'الفجر'], ['sunrise', 'الشروق'], ['dhuhr', 'الظهر'], ['asr', 'العصر'], ['maghrib', 'المغرب'], ['isha', 'العشاء']];
+const prFmt = new Intl.DateTimeFormat(AR, { hour: 'numeric', minute: '2-digit' });
+let PR = lsGet('prayer', null) || { city: 'cairo', alert: false };
+const prSave = () => lsSet('prayer', PR);
+const prRad = d => d * Math.PI / 180, prDeg = r => r * 180 / Math.PI;
+const prFix = (a, b) => { a = a - b * Math.floor(a / b); return a < 0 ? a + b : a; };
+function prJulian(y, m, d){
+  if (m <= 2) { y -= 1; m += 12; }
+  const A = Math.floor(y / 100), B = 2 - A + Math.floor(A / 4);
+  return Math.floor(365.25 * (y + 4716)) + Math.floor(30.6001 * (m + 1)) + d + B - 1524.5;
+}
+function prSun(jd){
+  const D = jd - 2451545.0;
+  const g = prFix(357.529 + 0.98560028 * D, 360), q = prFix(280.459 + 0.98564736 * D, 360);
+  const L = prFix(q + 1.915 * Math.sin(prRad(g)) + 0.020 * Math.sin(prRad(2 * g)), 360);
+  const e = 23.439 - 0.00000036 * D;
+  const RA = prFix(prDeg(Math.atan2(Math.cos(prRad(e)) * Math.sin(prRad(L)), Math.cos(prRad(L)))) / 15, 24);
+  return { decl: prDeg(Math.asin(Math.sin(prRad(e)) * Math.sin(prRad(L)))), eqt: q / 15 - RA };
+}
+function prCompute(date, lat, lng){
+  const y = date.getFullYear(), m = date.getMonth() + 1, d = date.getDate();
+  const jd = prJulian(y, m, d) - lng / 360;
+  const mid = t => prFix(12 - prSun(jd + t).eqt, 24);
+  const ang = (a, t, ccw) => {
+    const decl = prSun(jd + t).decl;
+    const c = (-Math.sin(prRad(a)) - Math.sin(prRad(decl)) * Math.sin(prRad(lat))) / (Math.cos(prRad(decl)) * Math.cos(prRad(lat)));
+    if (c < -1 || c > 1) return NaN;
+    const h = prDeg(Math.acos(c)) / 15;
+    return mid(t) + (ccw ? -h : h);
+  };
+  const asr = (f, t) => {
+    const decl = prSun(jd + t).decl;
+    return ang(-prDeg(Math.atan(1 / (f + Math.tan(prRad(Math.abs(lat - decl)))))), t, false);
+  };
+  const raw = {
+    fajr: ang(19.5, 5 / 24, true), sunrise: ang(0.833, 6 / 24, true), dhuhr: mid(12 / 24),
+    asr: asr(1, 13 / 24), maghrib: ang(0.833, 18 / 24, false), isha: ang(17.5, 18 / 24, false)
+  };
+  const out = {};
+  for (const k in raw) out[k] = new Date(Math.round((Date.UTC(y, m - 1, d) + (raw[k] - lng / 15) * 3600e3) / 60000) * 60000);
+  return out;
+}
+function prLoc(){
+  if (PR.city === 'geo' && PR.geo) return { name: 'موقعي الحالي', lat: PR.geo.lat, lng: PR.geo.lng };
+  const c = PR_CITIES.find(x => x[0] === PR.city) || PR_CITIES[0];
+  return { name: c[1], lat: c[2], lng: c[3] };
+}
+function prFillSelect(){
+  const sel = $('#pr-city');
+  sel.innerHTML = (PR.geo ? '<option value="geo">موقعي الحالي</option>' : '') + PR_CITIES.map(c => `<option value="${c[0]}">${c[1]}</option>`).join('');
+  sel.value = (PR.city === 'geo' && !PR.geo) ? 'cairo' : PR.city;
+}
+function prLeft(ms){
+  const m = Math.ceil(ms / 60000);
+  if (m <= 0) return 'دلوقتي';
+  const h = Math.floor(m / 60), mm = m % 60;
+  if (!h) return 'باقي ' + n(mm) + ' دقيقة';
+  return 'باقي ' + n(h) + ' ساعة' + (mm ? ' و' + n(mm) + ' دقيقة' : '');
+}
+function renderPrayer(){
+  const loc = prLoc(), now = new Date();
+  const t = prCompute(now, loc.lat, loc.lng);
+  if (Object.values(t).some(x => isNaN(x.getTime()))) {
+    $('#pr-next').innerHTML = '<b>مش قادر أحسب المواعيد</b><span>جرّب مدينة تانية.</span>';
+    $('#pr-list').innerHTML = ''; return;
+  }
+  const order = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
+  let next = order.find(k => t[k] > now), nextT = next ? t[next] : null;
+  if (!next) {
+    next = 'fajr';
+    nextT = prCompute(new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1), loc.lat, loc.lng).fajr;
+  }
+  const nm = k => PR_NAMES.find(x => x[0] === k)[1];
+  $('#pr-next').innerHTML = `<small>الصلاة الجاية · ${esc(loc.name)}</small><b>${nm(next)}</b><span>الساعة ${prFmt.format(nextT)} — ${prLeft(nextT - now)}</span>`;
+  $('#pr-list').innerHTML = PR_NAMES.map(([k, name]) => {
+    const cls = k === next && t[k] > now ? 'next' : (k === 'sunrise' ? 'sun' : '') + (t[k] <= now ? ' past' : '');
+    return `<div class="pr-row ${cls}"><b>${name}</b><time>${prFmt.format(t[k])}</time></div>`;
+  }).join('');
+}
+const prFired = new Set();
+function prayerTick(now){
+  if (currentView === 'prayer') renderPrayer();
+  if (!PR.alert) return;
+  const loc = prLoc(), t = prCompute(new Date(now), loc.lat, loc.lng);
+  for (const [k, name] of PR_NAMES) {
+    if (k === 'sunrise') continue;
+    const T = t[k].getTime(); if (isNaN(T)) continue;
+    const key = new Date(T).toDateString() + k;
+    if (now >= T && now - T < 120000 && !prFired.has(key)) {
+      prFired.add(key);
+      fireAlarm({ title: 'حان الآن موعد صلاة ' + name, id: 'pr-' + k, at: String(T), note: '' }, T);
+    }
+  }
+}
+prFillSelect();
+$('#pr-alert').checked = !!PR.alert;
+$('#pr-city').addEventListener('change', e => { PR.city = e.target.value; prSave(); renderPrayer(); });
+$('#pr-alert').addEventListener('change', async e => {
+  PR.alert = e.target.checked; prSave();
+  if (PR.alert) {
+    unlockAudio();
+    if (canNotify() && Notification.permission === 'default') { try { await Notification.requestPermission(); } catch (err) {} }
+    toast('تمام، هيرن وقت كل صلاة طول ما الصفحة مفتوحة.');
+  }
+});
+$('#pr-geo').addEventListener('click', () => {
+  if (!navigator.geolocation) return toast('تحديد الموقع مش متاح هنا. اختار مدينتك من القايمة.');
+  navigator.geolocation.getCurrentPosition(p => {
+    PR.geo = { lat: +p.coords.latitude.toFixed(3), lng: +p.coords.longitude.toFixed(3) };
+    PR.city = 'geo'; prSave(); prFillSelect(); renderPrayer();
+  }, () => toast('ماقدرتش أحدد موقعك. اختار مدينتك من القايمة.'), { timeout: 10000, maximumAge: 3600e3 });
+});
+
+/* ---------- scratch pad ---------- */
+const pad = $('#pad');
+const fmtSaved = new Intl.DateTimeFormat(AR, { hour: 'numeric', minute: '2-digit' });
+function padInfo(){
+  const t = S.notes.v.text || '';
+  const words = (t.trim().match(/\S+/g) || []).length;
+  $('#pad-info').textContent = words ? `${n(words)} كلمة، واتحفظ ${S.notes.updatedAt ? fmtSaved.format(new Date(S.notes.updatedAt)) : ''}` : 'فاضية';
+}
+function renderNotes(){ if (document.activeElement !== pad) pad.value = S.notes.v.text || ''; padInfo(); }
+pad.addEventListener('input', () => { S.notes.v.text = pad.value; commit('notes', { render: false }); padInfo(); });
+$('#pad-clear').addEventListener('click', () => {
+  if (!pad.value.trim()) return;
+  withUndo('notes', 'اتمسحت مساحة التفريغ', () => { S.notes.v.text = ''; });
+});
+
+/* ---------- youtube beside the scratch pad ---------- */
+let ytLoaded = false;
+function ytParse(s){
+  s = (s || '').trim(); if (!s) return null;
+  if (/^[\w-]{11}$/.test(s)) return { id: s, list: null };
+  let u; try { u = new URL(/^https?:\/\//i.test(s) ? s : 'https://' + s); } catch (e) { return null; }
+  const h = u.hostname.replace(/^(www|m|music)\./, '');
+  const list = u.searchParams.get('list');
+  let id = null;
+  if (h === 'youtu.be') id = u.pathname.slice(1).split('/')[0];
+  else if (h === 'youtube.com' || h === 'youtube-nocookie.com') {
+    if (u.pathname === '/watch') id = u.searchParams.get('v');
+    else { const m = u.pathname.match(/^\/(?:embed|shorts|live|v)\/([\w-]{11})/); if (m) id = m[1]; }
+  } else return null;
+  if (id && !/^[\w-]{11}$/.test(id)) id = null;
+  if (list && !/^[\w-]+$/.test(list)) return null;
+  if (!id && !list) return null;
+  return { id, list };
+}
+function ytRender(v, auto){
+  const fr = $('#yt-frame'), msg = $('#yt-msg');
+  fr.textContent = ''; msg.textContent = '';
+  if (!v) { fr.className = 'yt-frame empty'; fr.textContent = 'الصق رابط فيديو أو قايمة تشغيل يوتيوب فوق، وهيشتغل هنا جنب مساحة التفريغ.'; return; }
+  fr.className = 'yt-frame';
+  const q = new URLSearchParams({ rel: '0' });
+  if (auto) q.set('autoplay', '1');
+  let src = 'https://www.youtube-nocookie.com/embed/';
+  if (v.id) { src += v.id; if (v.list) q.set('list', v.list); }
+  else { src += 'videoseries'; q.set('list', v.list); }
+  const f = document.createElement('iframe');
+  f.src = src + '?' + q.toString();
+  f.title = 'مشغّل يوتيوب';
+  f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+  f.allowFullscreen = true;
+  f.referrerPolicy = 'strict-origin-when-cross-origin';
+  fr.append(f);
+  const a = document.createElement('a');
+  a.className = 'link'; a.target = '_blank'; a.rel = 'noopener';
+  a.href = v.id ? 'https://www.youtube.com/watch?v=' + v.id + (v.list ? '&list=' + v.list : '') : 'https://www.youtube.com/playlist?list=' + v.list;
+  a.textContent = 'افتحه في يوتيوب';
+  msg.append('لو الفيديو ماظهرش هنا، ', a);
+}
+function ytShow(){
+  if (ytLoaded) return; ytLoaded = true;
+  const v = lsGet('yt', null);
+  if (v && (v.id || v.list)) { $('#yt-url').value = v.raw || ''; ytRender(v, false); } else ytRender(null);
+}
+function ytGo(){
+  const raw = $('#yt-url').value.trim();
+  const v = ytParse(raw);
+  if (!v) { toast('الرابط ده مش رابط يوتيوب. الصق رابط فيديو أو قايمة تشغيل.'); return; }
+  ytLoaded = true;
+  lsSet('yt', { id: v.id, list: v.list, raw });
+  ytRender(v, true);
+}
+$('#yt-go').addEventListener('click', ytGo);
+$('#yt-url').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); ytGo(); } });
+
+/* ---------- header date ---------- */
+function paintToday(){
+  const d = new Date();
+  let txt = new Intl.DateTimeFormat(AR, { weekday: 'long', day: 'numeric', month: 'long' }).format(d);
+  try { txt += ' — ' + new Intl.DateTimeFormat('ar-EG-u-ca-islamic-umalqura', { day: 'numeric', month: 'long' }).format(d); } catch (e) {}
+  $('#today').textContent = txt;
+}
+
+/* ---------- hadith dialog ---------- */
+const hDlg = $('#hadith');
+hDlg.addEventListener('click', e => { if (e.target === hDlg || e.target.closest('[data-close]')) hDlg.close(); });
+$('#h-next').addEventListener('click', () => { curHadith = nextHadith(); showHadith(curHadith); });
+$('#open-hadith').addEventListener('click', () => { showHadith(curHadith); hDlg.showModal(); });
+
+/* ---------- boot ---------- */
+paintToday();
+renderLists(); renderNotes(); renderNotifyRow();
+setView(currentView);
+showHadith(curHadith);
+try { hDlg.showModal(); } catch (e) {}
+tick();
+setInterval(tick, 10000);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) { tick(); paintToday(); } });
+initSync();
+})();
+</script>
+</body>
+</html>
